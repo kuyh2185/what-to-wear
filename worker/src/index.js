@@ -1,6 +1,8 @@
-// Daum (Kakao) image search proxy for 내일 뭐 입지?
+// Daum (Kakao) image search proxy + AI outfit render for 내일 뭐 입지?
 // GET /search?q=...&q=...  (up to 8 queries) -> { results: [{ q, items: [...] }] }
 // Secret: KAKAO_REST_API_KEY (wrangler secret)
+
+import { render } from './render.js';
 
 const ALLOWED_ORIGINS = [
   'https://kuyh2185.github.io',
@@ -23,6 +25,7 @@ export default {
     if (request.method !== 'GET') return json({ error: 'method_not_allowed' }, 405, cors);
 
     const url = new URL(request.url);
+    if (url.pathname === '/render') return render(url, env, ctx, cors);
     if (url.pathname !== '/search') return json({ error: 'not_found' }, 404, cors);
     if (!env.KAKAO_REST_API_KEY) return json({ error: 'missing_api_key' }, 503, cors);
 
@@ -36,11 +39,11 @@ export default {
 
 async function search(q, env, ctx) {
   const cache = caches.default;
-  const key = new Request('https://cache.what-to-wear/shop?q=' + encodeURIComponent(q));
+  const key = new Request('https://cache.what-to-wear/v2/image?q=' + encodeURIComponent(q));
   const hit = await cache.match(key);
   if (hit) return hit.json();
 
-  const api = 'https://dapi.kakao.com/v2/search/image?sort=accuracy&size=5&query=' + encodeURIComponent(q);
+  const api = 'https://dapi.kakao.com/v2/search/image?sort=accuracy&size=10&query=' + encodeURIComponent(q);
   let res;
   try {
     res = await fetch(api, { headers: { Authorization: 'KakaoAK ' + env.KAKAO_REST_API_KEY } });
@@ -56,6 +59,8 @@ async function search(q, env, ctx) {
       title: q,
       image: d.thumbnail_url,
       full: d.image_url,
+      w: d.width || 0,
+      h: d.height || 0,
       site: d.display_sitename || '',
       link: d.doc_url,
     })),

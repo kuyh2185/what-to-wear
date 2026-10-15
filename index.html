@@ -80,8 +80,6 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .chips button:hover{border-color:var(--ink)}
 .chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .fit-sum{margin:0;color:var(--muted);font-size:14px;max-width:38ch}
-.fit-mini{display:flex;align-items:flex-end;gap:2px;height:96px}
-.fit-mini svg{height:96px;width:auto}
 
 .bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .bar h2{margin:0;font-size:20px;font-weight:700;text-wrap:balance}
@@ -98,6 +96,18 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 @keyframes rise{from{transform:translateY(8px)}to{transform:none}}
 .fig{background:color-mix(in srgb,var(--temp) 9%,var(--surface));display:flex;justify-content:center;padding:14px 0 6px;border-bottom:1px solid var(--line)}
 .fig svg{height:184px;width:auto;max-width:100%}
+.hero{display:flex;flex-direction:column}
+.hero .fig{flex:1}
+.fig.photo{position:relative;display:block;padding:0;aspect-ratio:3/4;background:var(--line);overflow:hidden}
+.fig.photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.fig.photo img{position:absolute;inset:0}
+.fig.ai .wait{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;padding:0 12px;animation:pulse 1.1s ease-in-out infinite alternate}
+.cap .tag{font-size:11px;font-weight:500;line-height:1.4;color:#fff;background:rgba(10,12,16,.62);border-radius:999px;padding:3px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@keyframes pulse{from{opacity:.4}to{opacity:1}}
+.cap{position:absolute;left:8px;right:8px;bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.cap a,.cap button{font:inherit;font-size:11px;font-weight:500;line-height:1.4;color:#fff;background:rgba(10,12,16,.62);border:0;border-radius:999px;padding:3px 9px;text-decoration:none;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cap button{flex:none}
+.cap a:hover,.cap button:hover{background:rgba(10,12,16,.82)}
 .body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:0}
 .eyebrow{margin:0;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .eyebrow .st{font-weight:700;font-size:16px}
@@ -164,12 +174,15 @@ footer p{margin:0 0 6px}
   .card:nth-child(4){grid-column:2 / span 2}
   .card:nth-child(5){grid-column:4 / span 2}
 }
-@media (max-width:860px){.fit{grid-template-columns:minmax(0,1fr)}.fit-mini{display:none}}
+@media (max-width:860px){.fit{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){
   .cards{grid-template-columns:minmax(0,1fr)}
   .card{flex-direction:row}
   .fig{border-bottom:0;border-right:1px solid var(--line);padding:12px 6px;align-items:center;flex:0 0 104px}
   .fig svg{height:156px}
+  .card .hero{flex:0 0 116px}
+  .card .fig.photo{aspect-ratio:auto;height:100%;min-height:170px}
+  .card .cap{left:4px;right:4px;bottom:4px;flex-direction:column;align-items:stretch}
   .panel{padding:18px 16px}
   .thermo{grid-template-columns:minmax(0,1fr)}
   .cmp{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -177,7 +190,7 @@ footer p{margin:0 0 6px}
   .cmpc .fig svg{height:160px}
   .sheet{padding:16px}
 }
-@media (prefers-reduced-motion:reduce){.card.new,.btn.spin svg{animation:none}h1 .q,.deg{transition:none}}
+@media (prefers-reduced-motion:reduce){.card.new,.btn.spin svg,.fig.ai .wait{animation:none}h1 .q,.deg{transition:none}}
 </style>
 </head>
 <body>
@@ -225,7 +238,6 @@ footer p{margin:0 0 6px}
       <div class="fg"><span>키</span><div class="chips" id="heightChips" role="group" aria-label="키"></div></div>
       <p class="fit-sum" id="fitSum"></p>
     </div>
-    <div class="fit-mini" id="fitMini" aria-hidden="true"></div>
   </section>
 
   <section aria-labelledby="listTitle" style="display:flex;flex-direction:column;gap:16px">
@@ -245,7 +257,7 @@ footer p{margin:0 0 6px}
 
   <footer>
     <p>기온 구간은 흔히 쓰는 ‘기온별 옷차림’ 기준을, 체형 포인트는 일반적인 스타일링 원칙을 따라요. 선택한 체형에 잘 맞는 아이템이 더 자주 나와요.</p>
-    <p>아이템 사진은 다음(카카오) 이미지 검색 결과이고, 누르면 사진이 실린 페이지로 이동해요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 확인하세요.</p>
+    <p>코디 이미지는 Cloudflare Workers AI(FLUX)로 선택한 체형에 맞춰 생성한 이미지예요. 아이템 사진은 다음(카카오) 이미지 검색 결과이고, 누르면 사진이 실린 페이지로 이동해요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 확인하세요.</p>
   </footer>
 </div>
 
@@ -253,10 +265,11 @@ footer p{margin:0 0 6px}
   <div class="ov-bg" data-close></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
     <div class="sheet-head">
-      <div><p>같은 코디, 체형별로 보기</p><h3 id="ovTitle"></h3></div>
+      <div><p>같은 코디, 체형별로 입혀보기</p><h3 id="ovTitle"></h3></div>
       <button type="button" class="x" id="ovClose" data-close aria-label="닫기">×</button>
     </div>
     <p class="sheet-items" id="ovItems"></p>
+    <p class="sheet-items">AI가 체형별로 같은 옷을 입혀 생성한 이미지예요. 실제 사람이 아니고, 핏과 디테일은 실제 제품과 다를 수 있어요.</p>
     <div class="cmp" id="cmp"></div>
   </div>
 </div>
@@ -754,8 +767,59 @@ function notesHTML(ev,max){
 
 // ---------- item photos (Daum image search via Cloudflare Worker) ----------
 const API_BASE='https://what-to-wear-shop.kuyh2185.workers.dev';
-const SHOP=new Map(), PENDING=new Set();
+const RES=new Map(), INFLIGHT=new Map(), TRIED=new Set(), BAD=new Set();
 const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function fetchQs(qs){
+  qs=[...new Set(qs)];
+  const need=qs.filter(q=>!RES.has(q)&&!INFLIGHT.has(q));
+  for(let i=0;i<need.length;i+=8){
+    const chunk=need.slice(i,i+8);
+    const p=fetch(API_BASE+'/search?'+chunk.map(q=>'q='+encodeURIComponent(q)).join('&'))
+      .then(r=>r.ok?r.json():null)
+      .then(j=>{for(const res of (j&&j.results)||[])RES.set(res.q,res.items||[]);})
+      .catch(()=>{})
+      .finally(()=>chunk.forEach(q=>{INFLIGHT.delete(q);TRIED.add(q);}));
+    chunk.forEach(q=>INFLIGHT.set(q,p));
+  }
+  return Promise.all(qs.map(q=>INFLIGHT.get(q))).then(()=>{});
+}
+const pickThumb=q=>(RES.get(q)||[]).find(x=>/^https?:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
+
+// ---------- AI outfit renders (Workers AI via the same Worker) ----------
+function renderUrl(c,bodyId,seed){
+  const p=new URLSearchParams({g:state.gender,b:bodyId,h:state.height,s:String((seed||0)%6)});
+  c.pieces.slice(0,7).forEach(x=>p.append('i',`${x.color} ${x.name}`));
+  return API_BASE+'/render?'+p.toString();
+}
+function aiHTML(c,body,seed,attrs){
+  const url=API_BASE?renderUrl(c,body.id,seed):'';
+  if(!url||BAD.has(url))return `<div class="fig">${figureSVG(c,body,curHeight().legLen)}</div>`;
+  const who=`${curHeight().id!=='m'?'키 '+curHeight().label+' · ':''}${body.label} 체형`;
+  return `<div class="fig photo ai"><span class="wait">AI가 ${who}으로<br>입혀보는 중…</span>
+    <img src="${esc(url)}" alt="${esc(who)}이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}>
+    <div class="cap"><span class="tag">AI 생성 · ${esc(who)}</span><button type="button" data-next ${attrs}>다른 모습</button></div></div>`;
+}
+function updateHero(i){
+  const c=state.combos[i], slot=document.querySelector(`[data-slot="${i}"]`);
+  if(c&&slot)slot.innerHTML=aiHTML(c,curBody(),c.pi,`data-card="${i}"`);
+}
+function updateCmp(bodyId){
+  const c=cmpCombo, slot=document.querySelector(`[data-cslot="${bodyId}"]`), b=BODY[state.gender].find(x=>x.id===bodyId);
+  if(c&&slot&&b)slot.innerHTML=aiHTML(c,b,cmpIdx[bodyId],`data-cbody="${bodyId}"`);
+}
+document.addEventListener('error',e=>{
+  const im=e.target; if(!(im instanceof HTMLImageElement)||!im.dataset.snap)return;
+  BAD.add(im.dataset.snap);
+  if(im.dataset.card!==undefined)updateHero(+im.dataset.card); else if(im.dataset.cbody)updateCmp(im.dataset.cbody);
+},true);
+function loadMedia(){
+  if(!API_BASE)return;
+  const itemQs=state.combos.flatMap(c=>c.pieces.map(qOf));
+  fetchQs(itemQs).then(()=>{
+    if(itemQs.some(q=>RES.has(q)))document.body.classList.add('shop-on');
+    for(const q of new Set(itemQs))paintShop(q,pickThumb(q));
+  });
+}
 const qOf=p=>p.product?`${prodName(p)} ${p.color}`:`${state.gender==='men'?'남성':'여성'} ${p.color} ${p.name}`;
 const thumbHTML=it=>it?`<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" referrerpolicy="no-referrer"><span class="dot"></span>`:'';
 const buyHTML=it=>it?`<a href="${esc(it.link)}" target="_blank" rel="noopener" title="${esc(it.title)}">사진 출처${it.site?` <small>· ${esc(it.site)}</small>`:''} ↗</a>`:'';
@@ -763,30 +827,12 @@ function paintShop(q,it){
   for(const el of document.querySelectorAll(`[data-q="${CSS.escape(q)}"]`))
     el.innerHTML=el.classList.contains('th')?thumbHTML(it):buyHTML(it);
 }
-function loadShop(){
-  if(!API_BASE)return;
-  const qs=[...new Set(state.combos.flatMap(c=>c.pieces.map(qOf)))].filter(q=>!SHOP.has(q)&&!PENDING.has(q));
-  for(let i=0;i<qs.length;i+=8){
-    const chunk=qs.slice(i,i+8);
-    chunk.forEach(q=>PENDING.add(q));
-    fetch(API_BASE+'/search?'+chunk.map(q=>'q='+encodeURIComponent(q)).join('&'))
-      .then(r=>r.ok?r.json():null)
-      .then(j=>{if(j&&j.results)document.body.classList.add('shop-on');
-        for(const res of (j&&j.results)||[]){
-        const it=(res.items||[]).find(x=>/^https?:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
-        SHOP.set(res.q,it); paintShop(res.q,it);
-      }})
-      .catch(()=>{})
-      .finally(()=>chunk.forEach(q=>PENDING.delete(q)));
-  }
-}
-
 function cardHTML(c,i,isNew){
-  const li=c.pieces.map(p=>{const q=qOf(p), it=SHOP.get(q);
+  const li=c.pieces.map(p=>{const q=qOf(p), it=pickThumb(q);
     return `<li><span class="th" style="--c:${COLORS[p.color]}" data-q="${esc(q)}">${thumbHTML(it)}</span><span class="txt"><span class="cat">${CAT[p.cat]}</span><span class="nm">${p.color} ${p.name}${p.product?`<a class="prod" href="${msUrl(prodName(p))}" target="_blank" rel="noopener">${prodName(p)} ↗</a>`:''}${API_BASE?`<span class="buy" data-q="${esc(q)}">${buyHTML(it)}</span>`:''}</span></span></li>`;}).join('');
   const body=curBody(), ev=evaluate(c,curRules());
   const fit=(ev.good.length||ev.bad.length)?`<div class="fitnote"><div class="hd">${body.label}${curHeight().id!=='m'?' · 키 '+curHeight().label:''} <span class="verdict ${ev.cls}">${ev.label}</span></div>${notesHTML(ev,2)}</div>`:'';
-  return `<article class="card${isNew?' new':''}"><div class="fig">${figureSVG(c,body,curHeight().legLen)}</div><div class="body">
+  return `<article class="card${isNew?' new':''}"><div class="hero" data-slot="${i}">${aiHTML(c,body,c.pi,`data-card="${i}"`)}</div><div class="body">
     <p class="eyebrow"><span class="st">${c.style}</span><span class="pal">${c.pal}</span></p>
     <ul class="pieces">${li}</ul>
     ${fit}
@@ -832,7 +878,7 @@ function swapOne(i){
 }
 function renderCards(all,only){
   $('cards').innerHTML=state.combos.map((c,i)=>cardHTML(c,i,all||i===only)).join('');
-  loadShop();
+  loadMedia();
 }
 
 function renderThermo(){
@@ -852,7 +898,6 @@ function renderFit(){
   $('bodyChips').innerHTML=bodies.map(b=>`<button type="button" data-body="${b.id}" aria-pressed="${b.id===cb.id}">${b.label}</button>`).join('');
   $('heightChips').innerHTML=HEIGHTS.map(h=>`<button type="button" data-height="${h.id}" aria-pressed="${h.id===ch.id}">${h.label}</button>`).join('');
   $('fitSum').textContent=cb.sum+(ch.sum?' 키는 '+ch.sum:'');
-  $('fitMini').innerHTML=figureSVG(null,cb,ch.legLen);
 }
 
 function setTemp(t,force){
@@ -864,22 +909,24 @@ function setTemp(t,force){
 }
 
 // ---------- compare sheet ----------
-let lastTrigger=null;
+let lastTrigger=null, cmpCombo=null, cmpIdx={};
 function openCompare(i,trigger){
   const c=state.combos[i]; if(!c)return;
-  lastTrigger=trigger;
+  lastTrigger=trigger; cmpCombo=c; cmpIdx={};
   $('ovTitle').textContent=`${c.style} · ${c.pal}`;
   $('ovItems').textContent=c.pieces.map(p=>`${p.color} ${p.name}`).join(' · ');
   const me=curBody().id, h=curHeight();
   $('cmp').innerHTML=BODY[state.gender].map(b=>{
     const ev=evaluate(c,rulesFor(b));
     const notes=notesHTML(ev,3)||'<div class="note"><i></i><span>특별히 신경 쓸 부분 없이 잘 맞아요.</span></div>';
-    return `<div class="cmpc${b.id===me?' me':''}"><div class="fig">${figureSVG(c,b,h.legLen)}</div><div class="in">
+    return `<div class="cmpc${b.id===me?' me':''}"><div class="hero" data-cslot="${b.id}">${aiHTML(c,b,0,`data-cbody="${b.id}"`)}</div><div class="in">
       <div class="nm2"><span>${b.label}${b.id===me?' <span class="you">선택함</span>':''}</span><span class="verdict ${ev.cls}">${ev.label}</span></div>${notes}</div></div>`;
   }).join('');
   $('ov').hidden=false;
   $('ovClose').focus();
 }
+$('cmp').addEventListener('click',e=>{const n=e.target.closest('[data-next]');if(!n)return;
+  const id=n.dataset.cbody; cmpIdx[id]=(cmpIdx[id]||0)+1; updateCmp(id);});
 function closeCompare(){$('ov').hidden=true; if(lastTrigger&&document.body.contains(lastTrigger))lastTrigger.focus();}
 $('ov').addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeCompare();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ov').hidden)closeCompare();});
@@ -909,6 +956,7 @@ for(const id of ['refresh','refresh2'])$(id).addEventListener('click',e=>{
 });
 $('cards').addEventListener('click',e=>{
   const s=e.target.closest('[data-swap]'); if(s){swapOne(+s.dataset.swap);return;}
+  const n=e.target.closest('[data-next]'); if(n){const i=+n.dataset.card, c=state.combos[i]; if(c){c.pi=(c.pi||0)+1; updateHero(i);} return;}
   const c=e.target.closest('[data-cmp]'); if(c)openCompare(+c.dataset.cmp,c);
 });
 

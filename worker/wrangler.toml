@@ -1,3 +1,6 @@
 name = "what-to-wear-shop"
 main = "src/index.js"
 compatibility_date = "2025-09-01"
+
+[ai]
+binding = "AI"
