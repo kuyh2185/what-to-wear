@@ -11,7 +11,7 @@
 import { makeCombo, BANDS, STYLES, BODY, rand } from '../../outfits.js';
 import { buildPrompt, renderBase64 } from './render.js';
 
-export const DAILY_IMAGE_BUDGET = 140; // stays inside the Workers AI free daily allocation
+export const DAILY_IMAGE_BUDGET = 200; // upper bound; the real stop is Workers AI's free daily allocation (error 4006)
 export const MAX_IMAGES = 880;         // ~1 GB KV free storage at ~1 MB per base64 image
 export const TARGET = { men: 12, women: 10 };
 const SEASON_BAND = [0, 1, 3, 4, 5, 6, 7, 7, 6, 4, 2, 1]; // typical band per month (Jan..Dec)
@@ -69,20 +69,26 @@ export async function generateOne(env) {
   // Reserve the budget before rendering so a failure can't overspend.
   await env.LOOKS.put(bKey, String(used + bodies.length), { expirationTtl: 3 * 86400 });
 
+  let lastError = '';
   const rendered = await Promise.all(bodies.map(async b => {
     const prompt = buildPrompt(g, b, 'm', items, seed);
     if (!prompt) return null;
     try {
       await env.LOOKS.put(`img:${id}:${b}`, await renderBase64(env, prompt));
       return b;
-    } catch {
+    } catch (e) {
+      lastError = String((e && e.message) || e).slice(0, 200);
       return null;
     }
   }));
   const ok = rendered.filter(Boolean);
   if (ok.length < bodies.length) {
     await Promise.all(ok.map(b => env.LOOKS.delete(`img:${id}:${b}`)));
-    return { failed: id, g, band, rendered: ok.length };
+    // Give back the unused budget so a failed run (e.g. AI quota reached) doesn't eat the day's allowance.
+    // When the free daily allocation is used up (4006), stop until it resets at 00:00 UTC.
+    const spent = /4006/.test(lastError) ? DAILY_IMAGE_BUDGET : used + ok.length;
+    await env.LOOKS.put(bKey, String(spent), { expirationTtl: 3 * 86400 });
+    return { failed: id, g, band, rendered: ok.length, error: lastError };
   }
 
   const look = {
