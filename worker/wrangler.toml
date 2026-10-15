@@ -4,3 +4,10 @@ compatibility_date = "2025-09-01"
 
 [ai]
 binding = "AI"
+
+[[kv_namespaces]]
+binding = "LOOKS"
+id = "9b248a31caef4deb8cb6d4324fc070e7"
+
+[triggers]
+crons = ["*/10 * * * *"]

@@ -2,3 +2,5 @@ node_modules/
 .wrangler/
 .dev.vars
 secrets.json
+.admin-token
+worker/.admin-token

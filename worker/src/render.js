@@ -1,5 +1,4 @@
-// AI outfit render: builds an English prompt only from known body types and outfit items,
-// so the endpoint can't be used to generate arbitrary images.
+// AI outfit render prompts: built only from known body types and outfit items.
 
 const COLOR_EN = {
   블랙: 'black', 화이트: 'white', 그레이: 'gray', 차콜: 'charcoal', 네이비: 'navy', 베이지: 'beige', 카멜: 'camel',
@@ -81,65 +80,33 @@ const PLACES = [
   'on a park path', 'at a crosswalk in downtown Seoul', 'in front of a brick building',
 ];
 const MODEL = '@cf/black-forest-labs/flux-1-schnell';
+const STEPS = 4;
 
-export async function render(url, env, ctx, cors) {
-  const g = url.searchParams.get('g');
-  const b = url.searchParams.get('b');
-  const h = url.searchParams.get('h') || 'm';
-  const seed = Math.min(PLACES.length - 1, Math.max(0, parseInt(url.searchParams.get('s') || '0', 10) || 0));
-  const body = BODY_EN[g] && BODY_EN[g][b];
-  if (!body || !(h in HEIGHT_EN)) return err('bad_body', 400, cors);
-
-  const items = url.searchParams.getAll('i').slice(0, 7);
+// items: ["화이트 옥스포드 셔츠", ...]; returns null if anything is outside the known vocabulary
+export function buildPrompt(g, bodyId, h, items, seed) {
+  const body = BODY_EN[g] && BODY_EN[g][bodyId];
+  if (!body || !(h in HEIGHT_EN)) return null;
   const parts = [];
   for (const it of items) {
     const sp = it.indexOf(' ');
     const color = COLOR_EN[it.slice(0, sp)];
     const name = ITEM_EN[it.slice(sp + 1)];
-    if (sp < 1 || !color || !name) return err('bad_item', 400, cors);
+    if (sp < 1 || !color || !name) return null;
     parts.push(`${color} ${name}`);
   }
-  if (!parts.length) return err('bad_item', 400, cors);
-
+  if (!parts.length) return null;
   const person = g === 'men' ? 'man' : 'woman';
-  const prompt =
-    `Full-body street style fashion photograph. Body type: ${body}${HEIGHT_EN[h]}. ` +
-    `A Korean ${person} in their twenties with ${body} is standing ${PLACES[seed]}, wearing ${parts.join(', ')}. ` +
+  return `Full-body street style fashion photograph. Body type: ${body}${HEIGHT_EN[h]}. ` +
+    `A Korean ${person} in their twenties with ${body} is standing ${PLACES[seed % PLACES.length]}, wearing ${parts.join(', ')}. ` +
     'The whole body is visible from head to shoes, centered in frame, facing the camera. ' +
     'Natural daylight, realistic photo, 35mm lens, sharp focus.';
-
-  const cache = caches.default;
-  const key = new Request('https://cache.what-to-wear/v1/render?p=' + encodeURIComponent(prompt));
-  const hit = await cache.match(key);
-  if (hit) return withCors(hit, cors);
-
-  let out;
-  try {
-    out = await env.AI.run(MODEL, { prompt, steps: 6 });
-  } catch (e) {
-    return err('render_failed', 502, cors);
-  }
-  if (!out || !out.image) return err('render_failed', 502, cors);
-
-  const bin = atob(out.image);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  const res = new Response(bytes, {
-    headers: { 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=2592000' },
-  });
-  ctx.waitUntil(cache.put(key, res.clone()));
-  return withCors(res, cors);
 }
 
-function withCors(res, cors) {
-  const r = new Response(res.body, res);
-  for (const [k, v] of Object.entries(cors)) r.headers.set(k, v);
-  return r;
+// returns the generated JPEG as a base64 string
+export async function renderBase64(env, prompt) {
+  const out = await env.AI.run(MODEL, { prompt, steps: STEPS });
+  if (!out || !out.image) throw new Error('render_failed');
+  return out.image;
 }
 
-function err(code, status, cors) {
-  return new Response(JSON.stringify({ error: code }), {
-    status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', ...cors },
-  });
-}
+export const KNOWN_ITEMS = ITEM_EN;
