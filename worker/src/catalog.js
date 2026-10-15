@@ -41,9 +41,11 @@ export async function generateOne(env) {
   const center = SEASON_BAND[kstNow().getUTCMonth()];
 
   const cells = [];
+  let totalImages = 0; // counted from the indexes so it can't drift
   for (const g of ['men', 'women']) {
     for (let band = 0; band < BANDS.length; band++) {
       const idx = await readIndex(env, g, band);
+      totalImages += idx.reduce((n, l) => n + l.bodies.length, 0);
       if (idx.length < TARGET[g]) cells.push({ g, band, idx, score: idx.length + 0.6 * Math.abs(band - center) + Math.random() * 0.1 });
     }
   }
@@ -52,7 +54,7 @@ export async function generateOne(env) {
   const { g, band, idx } = cells[0];
   const bodies = BODY[g].map(b => b.id);
   if (used + bodies.length > DAILY_IMAGE_BUDGET) return { done: 'daily_budget', used };
-  if (stats.images + bodies.length > MAX_IMAGES) return { done: 'storage_cap', images: stats.images };
+  if (totalImages + bodies.length > MAX_IMAGES) return { done: 'storage_cap', images: totalImages };
 
   const sigs = new Set(idx.map(l => l.sig));
   let combo;
@@ -90,9 +92,7 @@ export async function generateOne(env) {
   const fresh = await readIndex(env, g, band);
   fresh.push(look);
   await env.LOOKS.put(`idx:${g}:${band}`, JSON.stringify(fresh));
-  stats.images += ok.length;
-  stats.looks += 1;
-  await env.LOOKS.put('stats', JSON.stringify({ images: stats.images, looks: stats.looks }));
+  await env.LOOKS.put('stats', JSON.stringify({ images: totalImages + ok.length, looks: stats.looks + 1 }));
   return { added: id, g, band, style: combo.style };
 }
 
