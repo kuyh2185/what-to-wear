@@ -4,281 +4,299 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>내일 뭐 입지?</title>
-<meta name="description" content="기온·성별·체형에 맞춰 실제 제품으로 코디 5벌을 추천해요.">
+<meta name="description" content="내일 기온과 내 체형에 맞춰 코디 5벌을 골라드려요.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
-/* Layout: thermometer + body-type controls on top drive five outfit cards; accent hue follows the temperature band */
+/* Design read: lookbook-style web app for people in their 20s choosing tomorrow's outfit.
+   Editorial fashion language (29CM / Musinsa snap): photos lead, sharp media, monochrome base,
+   one accent that follows the temperature band. Dials: variance 7, motion 4, density 3.
+   Shape rule: photos and panels are square-cornered, interactive controls are full pills. */
 :root{
-  --bg:#eceef1; --surface:#ffffff; --ink:#14171c; --muted:#5b636f; --line:#d2d7de;
-  --skin:#e6cdb6; --fig-line:rgba(20,23,28,.22); --temp:#25917f;
-  --good:#2b7d48; --warn:#a85a0c; --scrim:rgba(14,16,20,.5);
-  --f-display:"Black Han Sans","IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --bg:#f3f3f2; --surface:#fbfbfa; --ink:#121315; --muted:#696c72; --line:#d9dadc; --frame:#e4e4e2;
+  --skin:#e2cbb6; --fig-line:rgba(18,19,21,.2); --temp:#25917f;
+  --good:#23794a; --warn:#a4560d; --scrim:rgba(12,13,15,.55);
+  --f-sans:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --gutter:max(20px,env(safe-area-inset-left,0px));
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#101216; --surface:#191c22; --ink:#e8eaee; --muted:#9aa2ad; --line:#2b3039;
-  --skin:#c9a88b; --fig-line:rgba(255,255,255,.24); --good:#62c487; --warn:#e5a057; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1012; --surface:#16171a; --ink:#ececee; --muted:#9c9fa6; --line:#2a2c31; --frame:#1d1f23;
+  --skin:#c4a487; --fig-line:rgba(255,255,255,.22); --good:#5cc187; --warn:#e3a05a; --scrim:rgba(0,0,0,.7); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#101216; --surface:#191c22; --ink:#e8eaee; --muted:#9aa2ad; --line:#2b3039;
-  --skin:#c9a88b; --fig-line:rgba(255,255,255,.24); --good:#62c487; --warn:#e5a057; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+  --bg:#0f1012; --surface:#16171a; --ink:#ececee; --muted:#9c9fa6; --line:#2a2c31; --frame:#1d1f23;
+  --skin:#c4a487; --fig-line:rgba(255,255,255,.22); --good:#5cc187; --warn:#e3a05a; --scrim:rgba(0,0,0,.7); color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:15px;line-height:1.55;
+  padding-bottom:env(safe-area-inset-bottom,0px);-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
 img{max-width:100%;display:block}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
-.wrap{max-width:1200px;margin:0 auto;padding-block:28px 72px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:24px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--temp);outline-offset:3px}
+.wrap{max-width:1360px;margin:0 auto;padding-left:var(--gutter);padding-right:max(20px,env(safe-area-inset-right,0px))}
 
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px}
-h1{font-family:var(--f-display);font-weight:400;font-size:clamp(48px,9vw,104px);line-height:.92;margin:0;letter-spacing:-.01em;text-wrap:balance}
-h1 .q{color:var(--temp);transition:color .3s}
-.lede{margin:10px 0 0;color:var(--muted);max-width:46ch}
-
-.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
-.seg button{font:inherit;font-weight:700;font-size:15px;border:0;background:transparent;color:var(--muted);padding:9px 22px;border-radius:999px;cursor:pointer}
+/* top bar */
+.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:19px;font-weight:800;letter-spacing:-.03em;margin:0}
+.brand span{color:var(--temp);transition:color .4s var(--ease)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:14px;padding:7px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--temp);outline-offset:2px}
 
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
-.thermo{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px 32px;align-items:center}
-.readout{display:flex;align-items:center;gap:10px}
-.deg{font-family:var(--f-display);font-size:clamp(72px,12vw,120px);line-height:.9;color:var(--temp);font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:right;transition:color .3s}
-.steps{display:flex;flex-direction:column;gap:6px}
-.step{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:700 20px/1 var(--f-mono);cursor:pointer}
+/* conditions */
+.cond{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 64px;padding-block:44px 52px;border-bottom:1px solid var(--line)}
+.kicker{margin:0 0 6px;color:var(--muted);font-size:14px;font-weight:500}
+.deg-row{display:flex;align-items:flex-start;gap:14px}
+.deg{font-size:clamp(96px,13vw,172px);font-weight:800;line-height:.86;letter-spacing:-.06em;color:var(--temp);font-variant-numeric:tabular-nums;transition:color .4s var(--ease)}
+.steps{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+.step{width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center;font-size:18px;transition:border-color .2s,transform .1s}
 .step:hover{border-color:var(--ink)}
-.ctl{display:flex;flex-direction:column;gap:14px;min-width:0}
-.band{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
-.band b{font-size:20px}
-.band .season{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
-.tip{margin:0;color:var(--muted)}
-.tip strong{color:var(--ink);font-weight:500}
+.step:active{transform:scale(.95)}
+.band{margin:22px 0 4px;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.band span{font-size:14px;font-weight:500;color:var(--muted);margin-left:8px;letter-spacing:0}
+.tip{margin:0;color:var(--muted);max-width:40ch}
+.tip strong{color:var(--ink);font-weight:600}
+.ctl{display:flex;flex-direction:column;gap:26px;min-width:0;padding-top:6px}
+.field{display:flex;flex-direction:column;gap:12px;min-width:0}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
 .range{position:relative;padding-bottom:22px}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:99px;margin:8px 0;
-  background:linear-gradient(90deg,#3557d6 0%,#3f6fe0 25%,#2f86c8 40%,#25917f 52%,#5f8f22 64%,#b07d0c 74%,#d9601a 84%,#d23a2c 100%);cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.25)}
-input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--surface);border:3px solid var(--ink)}
-.ticks{position:absolute;left:13px;right:13px;bottom:0;height:16px;font:500 10.5px/1 var(--f-mono);color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;margin:12px 0;border-radius:99px;cursor:pointer;
+  background:linear-gradient(90deg,#3557d6 0%,#3f6fe0 25%,#2f86c8 40%,#25917f 52%,#5f8f22 64%,#b07d0c 74%,#d9601a 84%,#d23a2c 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid var(--ink)}
+.ticks{position:absolute;left:13px;right:13px;bottom:0;height:14px;font:400 11px/1 var(--f-mono);color:var(--muted)}
 .ticks span{position:absolute;transform:translateX(-50%)}
-.opts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.opts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;font-size:14px}
 .chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
-.chk input{width:18px;height:18px;accent-color:var(--ink)}
-.fc{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
-.fc select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
-
-.fit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 28px;align-items:start}
-.fit-groups{display:flex;flex-direction:column;gap:12px;min-width:0}
-.fg{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
-.fg > span{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500;width:2.6em}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{font:inherit;font-size:14px;font-weight:500;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--ink);margin:0}
+.city{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
+.city select{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
 .chips button:hover{border-color:var(--ink)}
-.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.fit-sum{margin:0;color:var(--muted);font-size:14px;max-width:38ch}
+.chips button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.fit-sum{margin:-8px 0 0;color:var(--muted);font-size:14px;max-width:56ch}
 
-.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-.bar h2{margin:0;font-size:20px;font-weight:700;text-wrap:balance}
-.bar h2 span{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:14px;margin-left:6px}
-.btn{font:inherit;font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:12px 22px;cursor:pointer}
-.btn:hover{opacity:.9}
-.btn svg{width:18px;height:18px}
-.btn.spin svg{animation:spin .5s ease}
+/* lookbook */
+.book{padding-block:44px 96px}
+.book-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:28px}
+.book-head h2{margin:0;font-size:clamp(26px,3vw,34px);font-weight:800;letter-spacing:-.04em;line-height:1.1}
+.book-head .meta{margin:6px 0 0;color:var(--muted);font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;padding:13px 24px;cursor:pointer;white-space:nowrap;transition:transform .15s var(--ease),opacity .2s}
+.btn:hover{opacity:.88}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn i{font-size:18px}
+.btn.spin i{animation:spin .55s var(--ease)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-.card.new{animation:rise .35s ease}
-@keyframes rise{from{transform:translateY(8px)}to{transform:none}}
-.fig{background:color-mix(in srgb,var(--temp) 9%,var(--surface));display:flex;justify-content:center;padding:14px 0 6px;border-bottom:1px solid var(--line)}
-.fig svg{height:184px;width:auto;max-width:100%}
-.hero{display:flex;flex-direction:column}
-.hero .fig{flex:1}
-.fig.pending{position:relative;padding-bottom:40px}
-.fig.photo{position:relative;display:block;padding:0;aspect-ratio:3/4;background:var(--line);overflow:hidden}
-.fig.photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
-.fig.photo img{position:absolute;inset:0}
-.fig.ai .wait{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;padding:0 12px;animation:pulse 1.1s ease-in-out infinite alternate}
-.cap .tag{font-size:11px;font-weight:500;line-height:1.4;color:#fff;background:rgba(10,12,16,.62);border-radius:999px;padding:3px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-@keyframes pulse{from{opacity:.4}to{opacity:1}}
-.cap{position:absolute;left:8px;right:8px;bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-.cap a,.cap button{font:inherit;font-size:11px;font-weight:500;line-height:1.4;color:#fff;background:rgba(10,12,16,.62);border:0;border-radius:999px;padding:3px 9px;text-decoration:none;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.cap button{flex:none}
-.cap a:hover,.cap button:hover{background:rgba(10,12,16,.82)}
-.body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:0}
-.eyebrow{margin:0;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.eyebrow .st{font-weight:700;font-size:16px}
-.eyebrow .pal{font-size:11.5px;color:var(--muted);text-align:right}
-.pieces{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.pieces li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;align-items:start;font-size:14px;line-height:1.35}
-.txt{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;min-width:0}
-.th{position:relative;width:14px;height:14px;border-radius:4px;border:1px solid var(--fig-line);margin-top:2px;background:var(--c);overflow:hidden}
-.th img{width:100%;height:100%;object-fit:cover;background:#fff}
-.th .dot{position:absolute;right:3px;bottom:3px;width:11px;height:11px;border-radius:50%;background:var(--c);border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.cat{font-size:11.5px;color:var(--muted);padding-top:1px}
-.nm{overflow-wrap:anywhere}
-.buy{display:block}
-.buy a{display:inline-block;margin-top:2px;font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;font-variant-numeric:tabular-nums}
-.buy a small{font-weight:400;color:var(--muted)}
-.buy a:hover{text-decoration:underline}
-.shop-on .pieces li{grid-template-columns:52px minmax(0,1fr);gap:10px}
-.shop-on .th{width:52px;height:52px;border-radius:9px;margin-top:0}
-.shop-on .txt{display:flex;flex-direction:column;gap:1px}
-.shop-on .cat{padding-top:0}
-.prod{display:block;margin-top:2px;font-size:12px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
-.prod:hover{color:var(--ink);text-decoration-color:var(--ink)}
-.fitnote{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;line-height:1.45}
-.fitnote .hd{display:flex;gap:6px;align-items:center;font-weight:500;font-size:12px;color:var(--muted)}
-.verdict{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:999px;padding:1px 9px;border:1px solid currentColor}
+.looks{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:56px 24px}
+.look{grid-column:span 2;display:flex;flex-direction:column;min-width:0;animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0) * 70ms)}
+.look:nth-child(1),.look:nth-child(2){grid-column:span 3}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.frame{position:relative;aspect-ratio:4/5;background:var(--frame);overflow:hidden}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transition:transform 1.1s var(--ease)}
+.look:hover .frame img{transform:scale(1.025)}
+.frame.pending{display:grid;place-items:center}
+.frame.pending svg{height:78%;width:auto}
+.frame .wait{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px}
+.cap{margin:10px 0 0;font-size:12px;color:var(--muted)}
+.info{display:flex;flex-direction:column;gap:18px;padding-top:18px}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.title h3{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em}
+.title .pal{color:var(--muted);font-size:14px}
+.verdict{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600}
 .verdict.good{color:var(--good)} .verdict.warn{color:var(--warn)} .verdict.ok{color:var(--muted)}
-.note{display:grid;grid-template-columns:14px minmax(0,1fr);gap:4px}
-.note i{font-style:normal;font-weight:700}
+.pieces{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.look:nth-child(-n+2) .pieces{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px}
+.pieces li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:start}
+.th{position:relative;width:48px;aspect-ratio:4/5;background:var(--c);overflow:hidden;border:1px solid var(--fig-line)}
+.th img{width:100%;height:100%;object-fit:cover;background:#fff}
+.th .dot{position:absolute;right:3px;bottom:3px;width:10px;height:10px;border-radius:50%;background:var(--c);border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.txt{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.txt .cat{font-size:12px;color:var(--muted)}
+.txt .nm{font-size:14.5px;font-weight:600;overflow-wrap:anywhere}
+.txt a{font-size:12.5px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;overflow-wrap:anywhere}
+.txt a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+.notes{display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+.note{display:grid;grid-template-columns:18px minmax(0,1fr);gap:4px;align-items:start}
+.note i{font-size:15px;margin-top:2px}
 .note.g i{color:var(--good)} .note.w i{color:var(--warn)}
-.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:2px}
-.links a{font-size:12px;font-weight:500;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.links a:hover{border-color:var(--ink)}
-.acts{display:flex;flex-wrap:wrap;gap:4px 14px}
-.act{font:inherit;font-size:13px;color:var(--muted);background:none;border:0;padding:2px 0;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
-.act:hover{color:var(--ink)}
-.act svg{width:14px;height:14px}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer;transition:border-color .2s,transform .1s}
+.pill:hover{border-color:var(--ink)}
+.pill:active{transform:scale(.97)}
+.pill i{font-size:16px}
+.pill.icon{padding:8px 10px}
 
-.more{display:flex;justify-content:center}
-footer{color:var(--muted);font-size:13px;max-width:72ch}
-footer p{margin:0 0 6px}
+/* skeleton */
+.sk .frame{background:linear-gradient(100deg,var(--frame) 40%,color-mix(in srgb,var(--frame) 60%,var(--surface)) 50%,var(--frame) 60%);background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+.sk .bar{height:14px;background:var(--frame);margin-top:16px;width:60%}
+.sk .bar+.bar{width:85%;margin-top:10px}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 6px;max-width:80ch}
 
 /* compare sheet */
-.ov{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+.ov{position:fixed;inset:0;z-index:30;display:flex;align-items:stretch;justify-content:center;
   padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.ov-bg{position:absolute;inset:0;background:var(--scrim)}
-.sheet{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;width:min(1040px,100%);max-height:100%;overflow:auto;padding:20px 22px 24px;display:flex;flex-direction:column;gap:14px}
-.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-.sheet-head p{margin:0;font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
-.sheet-head h3{margin:2px 0 0;font-size:22px;text-wrap:balance}
-.x{font:inherit;font-size:22px;line-height:1;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;flex:none}
-.sheet-items{margin:0;color:var(--muted);font-size:14px}
-.cmp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.cmpc{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.cmpc.me{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
-.cmpc .fig{padding:12px 0 4px}
-.cmpc .fig svg{height:200px}
-.cmpc .in{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;line-height:1.45}
-.cmpc .nm2{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:700;font-size:14px}
-.cmpc .you{font-size:11px;font-weight:500;color:var(--muted)}
+.ov-bg{position:absolute;inset:0;background:var(--scrim);animation:fade .25s ease both}
+.sheet{position:relative;background:var(--surface);width:min(1280px,100%);max-height:100%;overflow:auto;padding:28px 32px 36px;display:flex;flex-direction:column;gap:20px;animation:up .4s var(--ease) both}
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{opacity:0;transform:translateY(18px)}}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.sheet-head h3{margin:0;font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.03em}
+.sheet-head p{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:70ch}
+.x{flex:none;width:42px;height:42px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center;font-size:20px}
+.x:hover{border-color:var(--ink)}
+.cmp{display:grid;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr));gap:32px 18px}
+.cmpc{display:flex;flex-direction:column;min-width:0}
+.cmpc .head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:12px}
+.cmpc .head b{font-size:16px;font-weight:700}
+.cmpc .head .you{font-size:12px;color:var(--temp);font-weight:600;margin-left:6px}
+.cmpc .verdict{margin-left:0}
+.cmpc .notes{margin-top:8px;font-size:13px}
+.cmpc.me .frame{outline:2px solid var(--ink);outline-offset:3px}
 
-@media (max-width:1080px) and (min-width:641px){
-  .cards{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .card{grid-column:span 2}
-  .card:nth-child(4){grid-column:2 / span 2}
-  .card:nth-child(5){grid-column:4 / span 2}
+/* tablet */
+@media (max-width:1023px){
+  .cond{grid-template-columns:minmax(0,1fr);gap:28px;padding-block:32px 40px}
+  .looks{grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 20px}
+  .look,.look:nth-child(1),.look:nth-child(2){grid-column:span 1}
+  .look:nth-child(-n+2) .pieces{grid-template-columns:minmax(0,1fr)}
+  .look:nth-child(5){grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
+  .look:nth-child(5) .info{padding-top:0}
+  .cmp{--cols:3!important}
 }
-@media (max-width:860px){.fit{grid-template-columns:minmax(0,1fr)}}
+/* phone */
 @media (max-width:640px){
-  .cards{grid-template-columns:minmax(0,1fr)}
-  .card{flex-direction:row}
-  .fig{border-bottom:0;border-right:1px solid var(--line);padding:12px 6px;align-items:center;flex:0 0 104px}
-  .fig svg{height:156px}
-  .card .hero{flex:0 0 116px}
-  .card .fig.photo{aspect-ratio:auto;height:100%;min-height:170px}
-  .card .cap{left:4px;right:4px;bottom:4px;flex-direction:column;align-items:stretch}
-  .panel{padding:18px 16px}
-  .thermo{grid-template-columns:minmax(0,1fr)}
-  .cmp{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cmpc .fig{border-right:0;border-bottom:1px solid var(--line);flex:none}
-  .cmpc .fig svg{height:160px}
-  .sheet{padding:16px}
+  .top .wrap{height:56px}
+  .looks{grid-template-columns:minmax(0,1fr);gap:44px}
+  .look:nth-child(5){display:flex}
+  .look:nth-child(5) .info{padding-top:18px}
+  .book{padding-bottom:120px}
+  .book-head .btn{position:fixed;z-index:20;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));
+    bottom:calc(14px + env(safe-area-inset-bottom,0px));justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .cmp{--cols:2!important;gap:24px 12px}
+  .ticks .minor{display:none}
+  .cond{padding-block:24px 32px}
+  .sheet{padding:20px 16px 28px}
+  .title h3{font-size:20px}
 }
-@media (prefers-reduced-motion:reduce){.card.new,.btn.spin svg,.fig.ai .wait{animation:none}h1 .q,.deg{transition:none}}
+@media (prefers-reduced-motion:reduce){
+  .look,.ov-bg,.sheet{animation:none}
+  .sk .frame{animation:none}
+  .btn.spin i{animation:none}
+  .frame img,.look:hover .frame img{transition:none;transform:none}
+}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header>
-    <div>
-      <h1>내일 뭐 입지<span class="q">?</span></h1>
-      <p class="lede">기온과 체형에 맞는 코디 5벌을 실제 제품과 함께 골라드려요. 마음에 드는 게 없으면 다른 조합을 눌러보세요.</p>
-    </div>
+<header class="top">
+  <div class="wrap">
+    <p class="brand">내일 뭐 입지<span>?</span></p>
     <div class="seg" role="group" aria-label="성별">
       <button type="button" id="g-men" data-g="men" aria-pressed="true">남자</button>
       <button type="button" id="g-women" data-g="women" aria-pressed="false">여자</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <section class="panel thermo" aria-label="내일 기온">
-    <div class="readout">
-      <div class="deg" id="deg" aria-live="polite">15°</div>
-      <div class="steps">
-        <button type="button" class="step" id="up" aria-label="1도 올리기">+</button>
-        <button type="button" class="step" id="down" aria-label="1도 내리기">−</button>
+<main class="wrap">
+  <section class="cond" aria-label="내일 기온과 체형">
+    <div>
+      <p class="kicker" id="kicker">내일 기온</p>
+      <div class="deg-row">
+        <div class="deg" id="deg" aria-live="polite">15°</div>
+        <div class="steps">
+          <button type="button" class="step" id="up" aria-label="1도 올리기"><i class="ph ph-plus"></i></button>
+          <button type="button" class="step" id="down" aria-label="1도 내리기"><i class="ph ph-minus"></i></button>
+        </div>
       </div>
+      <p class="band"><b id="bandLabel">12~16°</b><span id="season">가을</span></p>
+      <p class="tip" id="tip"></p>
     </div>
     <div class="ctl">
-      <div class="band"><b id="bandLabel">12~16°</b><span class="season" id="season">가을</span></div>
-      <p class="tip" id="tip"></p>
-      <div class="range">
-        <input type="range" id="temp" min="-10" max="35" step="1" value="15" aria-label="내일 기온(섭씨)">
-        <div class="ticks" id="ticks" aria-hidden="true"></div>
+      <div class="field">
+        <label class="flabel" for="temp">기온 맞추기</label>
+        <div class="range">
+          <input type="range" id="temp" min="-10" max="35" step="1" value="15">
+          <div class="ticks" id="ticks" aria-hidden="true"></div>
+        </div>
+        <div class="opts">
+          <label class="chk"><input type="checkbox" id="gap"> 일교차 10° 이상</label>
+          <span class="city" id="fc" hidden>
+            <select id="city" aria-label="도시"></select>
+            <span id="fcText"></span>
+          </span>
+        </div>
       </div>
-      <div class="opts">
-        <label class="chk"><input type="checkbox" id="gap"> 일교차 10° 이상 (겉옷 챙기기)</label>
-        <span class="fc" id="fc" hidden>
-          <select id="city" aria-label="도시"></select>
-          <span id="fcText"></span>
-        </span>
+      <div class="field">
+        <span class="flabel" id="bodyLabel">체형</span>
+        <div class="chips" id="bodyChips" role="group" aria-labelledby="bodyLabel"></div>
       </div>
-    </div>
-  </section>
-
-  <section class="panel fit" aria-label="체형">
-    <div class="fit-groups">
-      <div class="fg"><span>체형</span><div class="chips" id="bodyChips" role="group" aria-label="체형"></div></div>
-      <div class="fg"><span>키</span><div class="chips" id="heightChips" role="group" aria-label="키"></div></div>
+      <div class="field">
+        <span class="flabel" id="heightLabel">키</span>
+        <div class="chips" id="heightChips" role="group" aria-labelledby="heightLabel"></div>
+      </div>
       <p class="fit-sum" id="fitSum"></p>
     </div>
   </section>
 
-  <section aria-labelledby="listTitle" style="display:flex;flex-direction:column;gap:16px">
-    <div class="bar">
-      <h2 id="listTitle">추천 코디 <span id="count"></span></h2>
-      <button type="button" class="btn" id="refresh">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
-        다른 조합 보기
-      </button>
+  <section class="book" aria-labelledby="listTitle">
+    <div class="book-head">
+      <div>
+        <h2 id="listTitle">내일의 코디</h2>
+        <p class="meta" id="count"></p>
+      </div>
+      <button type="button" class="btn" id="refresh"><i class="ph ph-arrows-clockwise"></i>다른 코디 보기</button>
     </div>
-    <div class="cards" id="cards"><p class="tip">코디를 불러오는 중…</p></div>
-    <div class="more"><button type="button" class="btn" id="refresh2">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
-      5벌 더 섞기
-    </button></div>
+    <div class="looks" id="cards" aria-busy="true"></div>
   </section>
+</main>
 
-  <footer>
-    <p>기온 구간은 흔히 쓰는 ‘기온별 옷차림’ 기준을, 체형 포인트는 일반적인 스타일링 원칙을 따라요. 선택한 체형에 잘 맞는 아이템이 더 자주 나와요.</p>
-    <p>코디 이미지는 Cloudflare Workers AI(FLUX)로 체형마다 미리 생성해 둔 이미지이고, 매일 조금씩 늘어나요. 아이템 사진은 다음(카카오) 이미지 검색 결과이고, 누르면 사진이 실린 페이지로 이동해요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 확인하세요.</p>
-  </footer>
-</div>
+<footer>
+  <div class="wrap">
+    <p>코디 사진은 체형마다 AI(Cloudflare Workers AI)로 미리 만들어 둔 이미지예요. 실제 사람이 아니라서 핏과 디테일은 실제 제품과 다를 수 있어요.</p>
+    <p>기온 구간은 기온별 옷차림 기준을, 체형 평가는 일반적인 스타일링 원칙을 따라요. 아이템 사진은 다음 이미지 검색 결과이고, 제품 이름은 무신사 검색으로 연결돼요.</p>
+  </div>
+</footer>
 
 <div class="ov" id="ov" hidden>
   <div class="ov-bg" data-close></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
     <div class="sheet-head">
-      <div><p>같은 코디, 체형별로 입혀보기</p><h3 id="ovTitle"></h3></div>
-      <button type="button" class="x" id="ovClose" data-close aria-label="닫기">×</button>
+      <div>
+        <h3 id="ovTitle"></h3>
+        <p id="ovItems"></p>
+        <p>같은 옷을 체형마다 입혀본 AI 이미지예요. 키는 보통 기준이에요.</p>
+      </div>
+      <button type="button" class="x" id="ovClose" data-close aria-label="닫기"><i class="ph ph-x"></i></button>
     </div>
-    <p class="sheet-items" id="ovItems"></p>
-    <p class="sheet-items">AI가 체형별로 같은 옷을 입혀 미리 생성해 둔 이미지예요. 키는 보통 기준이고, 실제 사람이 아니라 핏과 디테일은 실제 제품과 다를 수 있어요.</p>
     <div class="cmp" id="cmp"></div>
   </div>
 </div>
 
 <script type="module">
-import {COLORS,NEUTRAL,BANDS,TEMP_HEX,OUTER_CHANCE,CAT,STYLES,PALETTES,RAW,PRODUCTS,BODY,HEIGHTS,DATA,rand,shuffle,bandOf,keyOf,weightOf,wpick,evaluate,pickColor,makeCombo} from './outfits.js';
+import {COLORS,BANDS,TEMP_HEX,CAT,STYLES,BODY,HEIGHTS,rand,shuffle,bandOf,evaluate,makeCombo} from './outfits.js';
 
-// ---------- figure ----------
+const API_BASE='https://what-to-wear-shop.kuyh2185.workers.dev';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+// ---------- silhouette (fallback while a temperature band has no AI images yet) ----------
 function figureSVG(c,body,legLen){
   const g=k=>c&&c.pieces.find(p=>p.cat===k);
   const outer=g('outer'),top=g('top'),dress=g('dress'),bottom=g('bottom'),shoes=g('shoes'),leg=g('leg');
@@ -293,11 +311,6 @@ function figureSVG(c,body,legLen){
   s+=`<rect x="${lc-lw/2}" y="72" width="${lw}" height="${legLen+2}" rx="3" fill="${legFill}"${legOp}/><rect x="${rc-lw/2}" y="72" width="${lw}" height="${legLen+2}" rx="3" fill="${legFill}"${legOp}/>`;
   s+=`<rect x="36.5" y="19" width="7" height="8" fill="${S}"/><circle cx="40" cy="12.5" r="9" fill="${S}"/>`;
   const torso=(end,f)=>`<path d="M${40-sh} 29 Q${40-sh} 25 ${40-sh+4} 25 H34 Q40 31 46 25 H${40+sh-4} Q${40+sh} 25 ${40+sh} 29 L${40+wa+1} 50 L${40+hip+1} ${end} H${40-hip-1} L${40-wa-1} 50 Z" fill="${f}" ${st}/>`;
-  if(!c){ // bare body for the picker preview
-    s+=torso(72,'color-mix(in srgb,var(--ink) 16%,var(--surface))');
-    s+=`<path d="M${40-hip-1} 68 H${40+hip+1} L${40+gap+lw+1} ${F} H${40+gap} L40 80 L${40-gap} ${F} H${40-gap-lw-1} Z" fill="color-mix(in srgb,var(--ink) 30%,var(--surface))"/>`;
-    return `<svg viewBox="0 0 80 ${F+9}" aria-hidden="true">${s}</svg>`;
-  }
   if(bottom&&!dress){const f=hx(bottom), h0=`M${40-hip-1} 68 H${40+hip+1}`;
     const P={
       wide:`${h0} L${40+gap+lw+4} ${F} H${40+gap+1} L40 82 L${40-gap-1} ${F} H${40-gap-lw-4} Z`,
@@ -333,29 +346,25 @@ function figureSVG(c,body,legLen){
 // ---------- links ----------
 const msUrl=q=>`https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`;
 const prodName=p=>p.product.replace('|',' ');
-function links(c,gender){
-  const g=gender==='men'?'남자':'여자';
+function socialLinks(c){
+  const g=state.gender==='men'?'남자':'여자';
   const main=c.pieces.filter(p=>['outer','top','dress','bottom'].includes(p.cat));
   const withProd=main.find(p=>p.product);
   const q=withProd?`${prodName(withProd)} ${g} 코디`:`${g} ${main.slice(0,2).map(p=>p.name).join(' ')} 코디`;
   const tag=(main[0]?main[0].name:'데일리').replace(/\s/g,'')+'코디';
-  return `<a href="https://www.pinterest.co.kr/search/pins/?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">Pinterest 착용샷</a>`+
-    `<a href="https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}/" target="_blank" rel="noopener">#${tag}</a>`;
+  return `<a class="pill icon" href="https://www.pinterest.co.kr/search/pins/?q=${encodeURIComponent(q)}" target="_blank" rel="noopener" aria-label="Pinterest에서 비슷한 착용 사진 보기"><i class="ph ph-pinterest-logo"></i></a>`+
+    `<a class="pill icon" href="https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}/" target="_blank" rel="noopener" aria-label="Instagram #${tag} 보기"><i class="ph ph-instagram-logo"></i></a>`;
 }
-
-const SWAP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a2 2 0 0 1 2-2h16"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a2 2 0 0 1-2 2H3"/></svg>';
-const BODY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 9v12M3 12h6M18 9v12M14.5 12h7"/></svg>';
 
 function notesHTML(ev,max){
-  const n=[...ev.good.map(t=>['g','✓',t]),...ev.bad.map(t=>['w','!',t])];
+  const n=[...ev.good.map(t=>['g','ph-check',t]),...ev.bad.map(t=>['w','ph-warning',t])];
   if(ev.cls==='warn')n.sort((a,b)=>a[0]==='w'?-1:1);
-  return n.slice(0,max).map(([k,i,t])=>`<div class="note ${k}"><i>${i}</i><span>${t}</span></div>`).join('');
+  return n.slice(0,max).map(([k,i,t])=>`<div class="note ${k}"><i class="ph ${i}"></i><span>${t}</span></div>`).join('');
 }
+const verdictHTML=ev=>`<span class="verdict ${ev.cls}"><i class="ph ${ev.cls==='good'?'ph-thumbs-up':ev.cls==='warn'?'ph-warning':'ph-equals'}"></i>${ev.label}</span>`;
 
-// ---------- item photos (Daum image search via Cloudflare Worker) ----------
-const API_BASE='https://what-to-wear-shop.kuyh2185.workers.dev';
-const RES=new Map(), INFLIGHT=new Map(), TRIED=new Set(), BAD=new Set();
-const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+// ---------- item photos (Daum image search via the Worker) ----------
+const RES=new Map(), INFLIGHT=new Map(), BAD=new Set();
 function fetchQs(qs){
   qs=[...new Set(qs)];
   const need=qs.filter(q=>!RES.has(q)&&!INFLIGHT.has(q));
@@ -365,20 +374,31 @@ function fetchQs(qs){
       .then(r=>r.ok?r.json():null)
       .then(j=>{for(const res of (j&&j.results)||[])RES.set(res.q,res.items||[]);})
       .catch(()=>{})
-      .finally(()=>chunk.forEach(q=>{INFLIGHT.delete(q);TRIED.add(q);}));
+      .finally(()=>chunk.forEach(q=>INFLIGHT.delete(q)));
     chunk.forEach(q=>INFLIGHT.set(q,p));
   }
   return Promise.all(qs.map(q=>INFLIGHT.get(q))).then(()=>{});
 }
 const pickThumb=q=>(RES.get(q)||[]).find(x=>/^https?:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
+const qOf=p=>p.product?`${prodName(p)} ${p.color}`:`${state.gender==='men'?'남성':'여성'} ${p.color} ${p.name}`;
+const thumbHTML=it=>it?`<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="dot"></span>`:'';
+function paintThumb(q,it){
+  for(const el of document.querySelectorAll(`[data-q="${CSS.escape(q)}"]`))el.innerHTML=thumbHTML(it);
+  for(const el of document.querySelectorAll(`[data-src="${CSS.escape(q)}"]`))
+    el.innerHTML=it?`<a href="${esc(it.link)}" target="_blank" rel="noopener">사진 출처${it.site?' '+esc(it.site):''}</a>`:'';
+}
+function loadThumbs(){
+  const qs=state.combos.flatMap(c=>c.pieces.map(qOf));
+  fetchQs(qs).then(()=>{for(const q of new Set(qs))paintThumb(q,pickThumb(q));});
+}
 
-// ---------- pre-generated looks (AI images made ahead of time by the Worker) ----------
+// ---------- pre-generated looks ----------
 const LOOKS=new Map();
 async function fetchLooks(g,band){
   const k=g+':'+band;
   if(LOOKS.has(k))return LOOKS.get(k);
   let list=[];
-  if(API_BASE){try{const r=await fetch(`${API_BASE}/looks?g=${g}&band=${band}`);if(r.ok)list=(await r.json()).looks||[];}catch(e){}}
+  try{const r=await fetch(`${API_BASE}/looks?g=${g}&band=${band}`);if(r.ok)list=(await r.json()).looks||[];}catch(e){}
   LOOKS.set(k,list);
   return list;
 }
@@ -389,10 +409,13 @@ async function lookPool(){
   return pool;
 }
 function pickLooks(pool,n,exclude){
-  const rules=curRules();
+  const rules=curRules(), body=curBody().id, band=bandOf(state.temp);
   let cand=pool.filter(l=>!exclude.has(l.id)&&!state.seenLooks.has(l.id));
   if(cand.length<n){state.seenLooks.clear();cand=pool.filter(l=>!exclude.has(l.id));}
-  const w=new Map(cand.map(l=>[l,Math.max(.15,evaluate(l,rules).score)*(state.gap&&l.pieces.some(p=>p.cat==='outer')?2.5:1)*(l.band===bandOf(state.temp)?1:.35)]));
+  const w=new Map(cand.map(l=>[l,Math.max(.15,evaluate(l,rules).score)
+    *(state.gap&&l.pieces.some(p=>p.cat==='outer')?2.5:1)
+    *(l.band===band?1:.35)
+    *(l.bodies.includes(body)?1:.2)]));
   const out=[];
   while(out.length<n&&w.size){
     let tot=0;for(const v of w.values())tot+=v;
@@ -407,11 +430,8 @@ function pickLooks(pool,n,exclude){
 const imgUrl=(c,bodyId)=>c.id&&c.bodies&&c.bodies.includes(bodyId)?`${API_BASE}/img/${c.id}/${bodyId}`:'';
 function heroHTML(c,body,attrs){
   const url=imgUrl(c,body.id);
-  if(!url||BAD.has(url))return `<div class="fig pending">${figureSVG(c,body,curHeight().legLen)}<div class="cap"><span class="tag">이 코디 이미지는 준비 중이에요</span></div></div>`;
-  const who=`${body.label} 체형`;
-  return `<div class="fig photo ai"><span class="wait">이미지 불러오는 중…</span>
-    <img src="${esc(url)}" alt="${esc(who)}이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}>
-    <div class="cap"><span class="tag">AI 생성 · ${esc(who)}</span></div></div>`;
+  if(!url||BAD.has(url))return `<div class="frame pending">${figureSVG(c,body,curHeight().legLen)}</div><p class="cap">이 코디의 ${body.label} 체형 이미지는 준비 중이에요</p>`;
+  return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" alt="${esc(body.label)} 체형이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><p class="cap">AI 생성 이미지, ${body.label} 체형</p>`;
 }
 function updateHero(i){
   const c=state.combos[i], slot=document.querySelector(`[data-slot="${i}"]`);
@@ -426,44 +446,33 @@ document.addEventListener('error',e=>{
   BAD.add(im.dataset.snap);
   if(im.dataset.card!==undefined)updateHero(+im.dataset.card); else if(im.dataset.cbody)updateCmp(im.dataset.cbody);
 },true);
-function loadMedia(){
-  if(!API_BASE)return;
-  const itemQs=state.combos.flatMap(c=>c.pieces.map(qOf));
-  fetchQs(itemQs).then(()=>{
-    if(itemQs.some(q=>RES.has(q)))document.body.classList.add('shop-on');
-    for(const q of new Set(itemQs))paintShop(q,pickThumb(q));
-  });
-}
-const qOf=p=>p.product?`${prodName(p)} ${p.color}`:`${state.gender==='men'?'남성':'여성'} ${p.color} ${p.name}`;
-const thumbHTML=it=>it?`<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" referrerpolicy="no-referrer"><span class="dot"></span>`:'';
-const buyHTML=it=>it?`<a href="${esc(it.link)}" target="_blank" rel="noopener" title="${esc(it.title)}">사진 출처${it.site?` <small>· ${esc(it.site)}</small>`:''} ↗</a>`:'';
-function paintShop(q,it){
-  for(const el of document.querySelectorAll(`[data-q="${CSS.escape(q)}"]`))
-    el.innerHTML=el.classList.contains('th')?thumbHTML(it):buyHTML(it);
-}
-function cardHTML(c,i,isNew){
-  const li=c.pieces.map(p=>{const q=qOf(p), it=pickThumb(q);
-    return `<li><span class="th" style="--c:${COLORS[p.color]}" data-q="${esc(q)}">${thumbHTML(it)}</span><span class="txt"><span class="cat">${CAT[p.cat]}</span><span class="nm">${p.color} ${p.name}${p.product?`<a class="prod" href="${msUrl(prodName(p))}" target="_blank" rel="noopener">${prodName(p)} ↗</a>`:''}${API_BASE?`<span class="buy" data-q="${esc(q)}">${buyHTML(it)}</span>`:''}</span></span></li>`;}).join('');
+
+function cardHTML(c,i){
   const body=curBody(), ev=evaluate(c,curRules());
-  const fit=(ev.good.length||ev.bad.length)?`<div class="fitnote"><div class="hd">${body.label}${curHeight().id!=='m'?' · 키 '+curHeight().label:''} <span class="verdict ${ev.cls}">${ev.label}</span></div>${notesHTML(ev,2)}</div>`:'';
-  return `<article class="card${isNew?' new':''}"><div class="hero" data-slot="${i}">${heroHTML(c,body,`data-card="${i}"`)}</div><div class="body">
-    <p class="eyebrow"><span class="st">${c.style}</span><span class="pal">${c.pal}</span></p>
-    <ul class="pieces">${li}</ul>
-    ${fit}
-    <div class="links">${links(c,state.gender)}</div>
-    <div class="acts">
-      <button type="button" class="act" data-cmp="${i}">${BODY_ICON}체형별로 보기</button>
-      <button type="button" class="act" data-swap="${i}">${SWAP_ICON}이 코디만 바꾸기</button>
+  const li=c.pieces.map(p=>{const q=qOf(p);
+    return `<li><span class="th" style="--c:${COLORS[p.color]}" data-q="${esc(q)}">${thumbHTML(pickThumb(q))}</span><span class="txt"><span class="cat">${CAT[p.cat]}</span><span class="nm">${p.color} ${p.name}</span>${p.product?`<a href="${msUrl(prodName(p))}" target="_blank" rel="noopener">${prodName(p)}</a>`:''}<span data-src="${esc(q)}"></span></span></li>`;}).join('');
+  const notes=notesHTML(ev,2);
+  return `<article class="look" style="--i:${i}">
+    <div data-slot="${i}">${heroHTML(c,body,`data-card="${i}"`)}</div>
+    <div class="info">
+      <div class="title"><h3>${c.style}</h3><span class="pal">${c.pal}</span>${(ev.good.length||ev.bad.length)?verdictHTML(ev):''}</div>
+      <ul class="pieces">${li}</ul>
+      ${notes?`<div class="notes">${notes}</div>`:''}
+      <div class="acts">
+        <button type="button" class="pill" data-cmp="${i}"><i class="ph ph-users-three"></i>체형별로 보기</button>
+        <button type="button" class="pill" data-swap="${i}"><i class="ph ph-shuffle"></i>이 코디만 바꾸기</button>
+        ${socialLinks(c)}
+      </div>
     </div>
-  </div></article>`;
+  </article>`;
 }
+const skeleton=()=>Array.from({length:5},(_,i)=>`<div class="look sk" style="--i:${i}" aria-hidden="true"><div class="frame"></div><div class="bar"></div><div class="bar"></div></div>`).join('');
 
 // ---------- state ----------
 const store={get(k,d){try{const v=localStorage.getItem('nmi.'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('nmi.'+k,JSON.stringify(v));}catch(e){}}};
 const state={gender:store.get('gender','men'),temp:store.get('temp',15),gap:store.get('gap',false),
   body:{men:store.get('body.men','avg'),women:store.get('body.women','avg')},height:store.get('height','m'),combos:[],seen:new Set(),seenLooks:new Set()};
-const $=id=>document.getElementById(id);
-const curBody=()=>BODY[state.gender].find(b=>b.id===state.body[state.gender])||BODY[state.gender][0];
+const curBody=()=>BODY[state.gender].find(b=>b.id===state.body[state.gender])||BODY[state.gender].find(b=>b.id==='avg');
 const curHeight=()=>HEIGHTS.find(h=>h.id===state.height)||HEIGHTS[1];
 const rulesFor=b=>b.rules.concat(curHeight().rules);
 const curRules=()=>rulesFor(curBody());
@@ -481,16 +490,16 @@ function freshCombo(style,taken){
 let genToken=0;
 async function generateAll(){
   const t=++genToken;
+  if(!state.combos.length)$('cards').innerHTML=skeleton();
   const pool=await lookPool();
   if(t!==genToken)return;
   const looks=pickLooks(pool,5,new Set());
   looks.forEach(l=>state.seenLooks.add(l.id));
   // Until the catalog covers this temperature, fill the rest with live combos (silhouette images).
-  const styles=shuffle(STYLES[state.gender]).filter(s=>!looks.some(l=>l.style===s)), taken=new Set();
-  const extra=[];
+  const styles=shuffle(STYLES[state.gender]).filter(s=>!looks.some(l=>l.style===s)), taken=new Set(), extra=[];
   for(let k=0;looks.length+extra.length<5;k++){const c=freshCombo(styles[k%styles.length]||rand(STYLES[state.gender]),taken);taken.add(c.sig);extra.push(c);}
   state.combos=looks.concat(extra);
-  renderCards(true);
+  renderCards();
 }
 async function swapOne(i){
   const pool=await lookPool();
@@ -502,11 +511,12 @@ async function swapOne(i){
     const free=STYLES[state.gender].filter(s=>!usedStyles.has(s));
     state.combos[i]=freshCombo(rand(free.length?free:STYLES[state.gender]),new Set(state.combos.map(c=>c.sig)));
   }
-  renderCards(false,i);
+  renderCards();
 }
-function renderCards(all,only){
-  $('cards').innerHTML=state.combos.map((c,i)=>cardHTML(c,i,all||i===only)).join('');
-  loadMedia();
+function renderCards(){
+  $('cards').innerHTML=state.combos.map((c,i)=>cardHTML(c,i)).join('');
+  $('cards').setAttribute('aria-busy','false');
+  loadThumbs();
 }
 
 function renderThermo(){
@@ -515,15 +525,15 @@ function renderThermo(){
   $('temp').value=t;
   $('bandLabel').textContent=band.label;
   $('season').textContent=band.season;
-  $('tip').innerHTML=band.tip+(state.gap?' <strong>일교차가 커요. 아침저녁용 겉옷을 하나 더 챙기세요.</strong>':'');
+  $('tip').innerHTML=band.tip+(state.gap?' <strong>일교차가 커서 겉옷을 하나 더 챙기면 좋아요.</strong>':'');
   document.documentElement.style.setProperty('--temp',TEMP_HEX[b]);
-  $('count').textContent=`${band.label} · ${state.gender==='men'?'남자':'여자'} · ${curBody().label}`;
+  $('count').textContent=`${band.label} 날씨에 맞춘 ${state.gender==='men'?'남자':'여자'} ${curBody().label} 체형 코디예요`;
   $('gap').checked=state.gap;
   for(const btn of document.querySelectorAll('.seg button'))btn.setAttribute('aria-pressed',String(btn.dataset.g===state.gender));
 }
 function renderFit(){
-  const bodies=BODY[state.gender], cb=curBody(), ch=curHeight();
-  $('bodyChips').innerHTML=bodies.map(b=>`<button type="button" data-body="${b.id}" aria-pressed="${b.id===cb.id}">${b.label}</button>`).join('');
+  const cb=curBody(), ch=curHeight();
+  $('bodyChips').innerHTML=BODY[state.gender].map(b=>`<button type="button" data-body="${b.id}" aria-pressed="${b.id===cb.id}">${b.label}</button>`).join('');
   $('heightChips').innerHTML=HEIGHTS.map(h=>`<button type="button" data-height="${h.id}" aria-pressed="${h.id===ch.id}">${h.label}</button>`).join('');
   $('fitSum').textContent=cb.sum+(ch.sum?' 키는 '+ch.sum:'');
 }
@@ -541,24 +551,30 @@ let lastTrigger=null, cmpCombo=null;
 function openCompare(i,trigger){
   const c=state.combos[i]; if(!c)return;
   lastTrigger=trigger; cmpCombo=c;
-  $('ovTitle').textContent=`${c.style} · ${c.pal}`;
-  $('ovItems').textContent=c.pieces.map(p=>`${p.color} ${p.name}`).join(' · ');
-  const me=curBody().id, h=curHeight();
-  $('cmp').innerHTML=BODY[state.gender].map(b=>{
+  $('ovTitle').textContent=`${c.style} 코디, 체형별로 보기`;
+  $('ovItems').textContent=c.pieces.map(p=>`${p.color} ${p.name}`).join(', ');
+  const bodies=BODY[state.gender], me=curBody().id;
+  $('cmp').style.setProperty('--cols',bodies.length>6?4:3);
+  $('cmp').innerHTML=bodies.map(b=>{
     const ev=evaluate(c,rulesFor(b));
-    const notes=notesHTML(ev,3)||'<div class="note"><i></i><span>특별히 신경 쓸 부분 없이 잘 맞아요.</span></div>';
-    return `<div class="cmpc${b.id===me?' me':''}"><div class="hero" data-cslot="${b.id}">${heroHTML(c,b,`data-cbody="${b.id}"`)}</div><div class="in">
-      <div class="nm2"><span>${b.label}${b.id===me?' <span class="you">선택함</span>':''}</span><span class="verdict ${ev.cls}">${ev.label}</span></div>${notes}</div></div>`;
+    const notes=notesHTML(ev,2)||'<div class="note"><i class="ph ph-check"></i><span>특별히 신경 쓸 부분 없이 잘 맞아요.</span></div>';
+    return `<div class="cmpc${b.id===me?' me':''}"><div data-cslot="${b.id}">${heroHTML(c,b,`data-cbody="${b.id}"`)}</div>
+      <div class="head"><span><b>${b.label}</b>${b.id===me?'<span class="you">내 체형</span>':''}</span>${verdictHTML(ev)}</div>
+      <div class="notes">${notes}</div></div>`;
   }).join('');
   $('ov').hidden=false;
+  document.body.style.overflow='hidden';
   $('ovClose').focus();
 }
-function closeCompare(){$('ov').hidden=true; if(lastTrigger&&document.body.contains(lastTrigger))lastTrigger.focus();}
+function closeCompare(){
+  $('ov').hidden=true;
+  document.body.style.overflow='';
+  if(lastTrigger&&document.body.contains(lastTrigger))lastTrigger.focus();
+}
 $('ov').addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeCompare();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ov').hidden)closeCompare();});
 
-// ticks
-$('ticks').innerHTML=[5,9,12,17,20,23,28].map(v=>`<span style="left:${(v+10)/45*100}%">${v}°</span>`).join('');
+$('ticks').innerHTML=[5,9,12,17,20,23,28].map(v=>`<span${[9,17,23].includes(v)?' class="minor"':''} style="left:${(v+10)/45*100}%">${v}°</span>`).join('');
 
 // ---------- events ----------
 $('temp').addEventListener('input',e=>setTemp(+e.target.value));
@@ -567,7 +583,7 @@ $('down').addEventListener('click',()=>setTemp(state.temp-1));
 $('gap').addEventListener('change',e=>{state.gap=e.target.checked;store.set('gap',state.gap);renderThermo();generateAll();});
 for(const btn of document.querySelectorAll('.seg button'))btn.addEventListener('click',()=>{
   if(state.gender===btn.dataset.g)return;
-  state.gender=btn.dataset.g;store.set('gender',state.gender);state.seen.clear();
+  state.gender=btn.dataset.g;store.set('gender',state.gender);state.seen.clear();state.combos=[];
   renderThermo();renderFit();generateAll();
 });
 $('bodyChips').addEventListener('click',e=>{const b=e.target.closest('[data-body]');if(!b)return;
@@ -575,17 +591,18 @@ $('bodyChips').addEventListener('click',e=>{const b=e.target.closest('[data-body
   renderFit();renderThermo();generateAll();});
 $('heightChips').addEventListener('click',e=>{const b=e.target.closest('[data-height]');if(!b)return;
   state.height=b.dataset.height;store.set('height',state.height);renderFit();generateAll();});
-for(const id of ['refresh','refresh2'])$(id).addEventListener('click',e=>{
+$('refresh').addEventListener('click',e=>{
   const b=e.currentTarget;b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');
   generateAll();
-  if(id==='refresh2')$('listTitle').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  if(window.scrollY>$('listTitle').getBoundingClientRect().top+window.scrollY)
+    $('listTitle').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
 });
 $('cards').addEventListener('click',e=>{
   const s=e.target.closest('[data-swap]'); if(s){swapOne(+s.dataset.swap);return;}
   const c=e.target.closest('[data-cmp]'); if(c)openCompare(+c.dataset.cmp,c);
 });
 
-// ---------- forecast (Open-Meteo): works on a normal website; stays hidden when the request is blocked ----------
+// ---------- tomorrow's forecast (Open-Meteo) ----------
 const CITIES={서울:[37.57,126.98],부산:[35.18,129.08],대구:[35.87,128.6],인천:[37.46,126.71],광주:[35.16,126.85],대전:[36.35,127.38],울산:[35.54,129.31],제주:[33.5,126.53],강릉:[37.75,128.88]};
 $('city').innerHTML=Object.keys(CITIES).map(c=>`<option>${c}</option>`).join('');
 $('city').value=store.get('city','서울');
@@ -602,7 +619,8 @@ async function applyForecast(){
   const city=$('city').value, f=await loadForecast(city);
   if(!f)return;
   $('fc').hidden=false;
-  $('fcText').textContent=`내일 최고 ${Math.round(f.max)}° · 최저 ${Math.round(f.min)}° 적용됨`;
+  $('kicker').textContent=`${city} 내일 예보`;
+  $('fcText').textContent=`최고 ${Math.round(f.max)}° 최저 ${Math.round(f.min)}°`;
   state.gap=(f.max-f.min)>=10; store.set('gap',state.gap);
   setTemp(f.max*.6+f.min*.4,true);
 }
@@ -613,6 +631,5 @@ renderFit();
 generateAll();
 applyForecast();
 </script>
-
 </body>
 </html>

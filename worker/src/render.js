@@ -64,14 +64,18 @@ const BODY_EN = {
     avg: 'an average, medium build',
     muscle: 'a muscular bodybuilder physique with very broad shoulders, big chest and thick arms',
     chubby: 'an overweight, chubby plus-size body with a round belly, wide waist and thick arms',
+    belly: 'an average frame with a noticeable beer belly and soft midsection, normal arms and legs',
+    thigh: 'a stocky lower body with very thick, heavy thighs and wide hips, and a medium upper body',
   },
   women: {
+    slim: 'a very thin, slender body with narrow shoulders and skinny arms and legs',
     avg: 'an average, medium build',
-    rect: 'a slim, boyish straight figure with a flat chest and no waist curve',
-    hour: 'a voluptuous, curvy hourglass figure with a tiny waist, wide hips and a full bust',
-    pear: 'a plus-size pear-shaped body with narrow shoulders, very wide hips and thick heavy thighs',
-    inv: 'a tall athletic body with very broad, square swimmer shoulders, wide upper back and slim hips',
-    apple: 'an overweight, plump plus-size body with a thick waist, full round face and heavy arms',
+    rect: 'a straight, boyish body with a flat chest, a wide waist and narrow hips, no curves at all',
+    hour: 'a very curvy hourglass body with a large bust, a small cinched waist and wide round hips',
+    pear: 'a pear-shaped body with narrow shoulders, very wide hips and thick heavy thighs',
+    inv: 'a muscular athletic body with very broad, square swimmer shoulders, a wide back and narrow hips',
+    apple: 'a slightly chubby body with a soft belly and thick waist, average arms and legs',
+    plus: 'a plus-size, heavy-set curvy body with full arms, a soft belly, wide hips and thick thighs',
   },
 };
 const HEIGHT_EN = { s: ', short and petite', m: '', t: ', tall' };
