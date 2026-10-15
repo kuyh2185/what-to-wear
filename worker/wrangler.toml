@@ -10,4 +10,4 @@ binding = "LOOKS"
 id = "9b248a31caef4deb8cb6d4324fc070e7"
 
 [triggers]
-crons = ["*/10 * * * *"]
+crons = [] # generation moved to Gemini (images are imported with tools/import-looks.mjs)

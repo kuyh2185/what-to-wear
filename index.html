@@ -389,12 +389,14 @@ async function lookPool(){
 }
 function pickLooks(pool,n,exclude){
   const rules=curRules(), body=curBody().id, band=bandOf(state.temp);
+  // Looks styled for this body come first; average-body looks fill in. Looks styled for another body are skipped.
+  pool=pool.filter(l=>imgBody(l,body));
   let cand=pool.filter(l=>!exclude.has(l.id)&&!state.seenLooks.has(l.id));
   if(cand.length<n){state.seenLooks.clear();cand=pool.filter(l=>!exclude.has(l.id));}
   const w=new Map(cand.map(l=>[l,Math.max(.15,evaluate(l,rules).score)
     *(state.gap&&l.pieces.some(p=>p.cat==='outer')?2.5:1)
     *(l.band===band?1:.35)
-    *(l.bodies.includes(body)?1:.2)]));
+    *(l.bodies.includes(body)?(body==='avg'?1:4):.25)]));
   const out=[];
   while(out.length<n&&w.size){
     let tot=0;for(const v of w.values())tot+=v;
@@ -406,11 +408,13 @@ function pickLooks(pool,n,exclude){
   }
   return out;
 }
-const imgUrl=(c,bodyId)=>c.id&&c.bodies&&c.bodies.includes(bodyId)?`${API_BASE}/img/${c.id}/${bodyId}`:'';
+// Most looks only have the average-body photo for now; use it for every body type.
+const imgBody=(c,bodyId)=>!c.id||!c.bodies?null:c.bodies.includes(bodyId)?bodyId:c.bodies.includes('avg')?'avg':null;
 function heroHTML(c,body,attrs,eager){
-  const url=imgUrl(c,body.id);
+  const ib=imgBody(c,body.id), url=ib?`${API_BASE}/img/${c.id}/${ib}`:'';
   if(!url||BAD.has(url))return `<div class="frame pending">${figureSVG(c,body,curHeight().legLen)}</div><figcaption>${body.label} 체형 마네킹 사진은 준비 중이에요</figcaption>`;
-  return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" ${eager?'fetchpriority="high"':'loading="lazy"'} alt="${esc(body.label)} 체형 검정 마네킹이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><figcaption>AI 생성 이미지, ${body.label} 체형 마네킹</figcaption>`;
+  const label=BODY[state.gender].find(b=>b.id===ib)?.label||body.label;
+  return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" ${eager?'fetchpriority="high"':'loading="lazy"'} alt="${esc(label)} 체형 검정 마네킹이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><figcaption>AI 생성 이미지, ${label} 체형 마네킹</figcaption>`;
 }
 function updateHero(i){
   const c=state.combos[i], slot=document.querySelector(`[data-slot="${i}"]`);
@@ -435,8 +439,7 @@ function cardHTML(c,i){
     <p class="items">${items}</p>
     ${fitLine(ev,body.label+' 체형')}
     <div class="acts">
-      <button type="button" class="link" data-cmp="${i}">체형별로 보기</button>
-      <button type="button" class="link quiet" data-buy="${i}" aria-expanded="false" aria-controls="buy-${i}">제품 정보</button>
+      <button type="button" class="link" data-buy="${i}" aria-expanded="false" aria-controls="buy-${i}">제품 정보</button>
       <button type="button" class="link quiet" data-swap="${i}">이 코디만 바꾸기</button>
     </div>
     <div class="buy" id="buy-${i}" hidden></div>
@@ -464,7 +467,7 @@ const curRules=()=>rulesFor(curBody());
 function freshCombo(style,taken){
   let c;
   for(let k=0;k<40;k++){
-    c=makeCombo(state.gender,state.temp,state.gap,style,curRules());
+    c=makeCombo(state.gender,state.temp,state.gap,style,curRules(),true);
     if(!state.seen.has(c.sig)&&!taken.has(c.sig))break;
   }
   if(state.seen.size>400)state.seen.clear();

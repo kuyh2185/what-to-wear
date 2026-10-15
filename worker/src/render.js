@@ -55,23 +55,23 @@ const ITEM_EN = {
   '크로스백': 'crossbody bag', '버킷햇': 'bucket hat', '선글라스': 'sunglasses', '가죽 벨트': 'leather belt',
   '퍼 귀도리': 'fur earmuffs', '니트 비니': 'knit beanie', '레그워머': 'leg warmers', '숄더백': 'shoulder bag',
   '실크 스카프': 'silk scarf', '리본 헤어핀': 'ribbon hair clip', '라탄백': 'rattan bag', '진주 귀걸이': 'pearl earrings',
-  '기모 스타킹': 'thick opaque tights', '스타킹': 'sheer tights',
+  '기모 스타킹': 'thick opaque tights', '스타킹': 'opaque tights',
 };
 
 const BODY_EN = {
   men: {
     slim: 'a very thin, skinny body with narrow shoulders and thin arms and legs',
     avg: 'an average, medium build',
-    muscle: 'a muscular bodybuilder physique with very broad shoulders, big chest and thick arms',
+    muscle: 'a huge muscular bodybuilder physique: very broad shoulders, a big chest and thick muscular arms that visibly fill the sleeves, a V-shaped torso',
     chubby: 'an overweight, chubby plus-size body with a round belly, wide waist and thick arms',
     belly: 'an average frame with a noticeable beer belly and soft midsection, normal arms and legs',
-    thigh: 'a stocky lower body with very thick, heavy thighs and wide hips, and a medium upper body',
+    thigh: 'a bottom-heavy body: very thick, heavy thighs and wide hips that visibly fill out the pants, with a medium upper body',
   },
   women: {
     slim: 'a very thin, slender body with narrow shoulders and skinny arms and legs',
     avg: 'an average, medium build',
-    rect: 'a straight, boyish body with a flat chest, a wide waist and narrow hips, no curves at all',
-    hour: 'a very curvy hourglass body with a large bust, a small cinched waist and wide round hips',
+    rect: 'a straight, rectangular silhouette: shoulders, waist and hips all about the same width, no defined waist',
+    hour: 'a very curvy hourglass silhouette: a small, clearly defined waist with full rounded hips and an equally full upper body',
     pear: 'a pear-shaped body with narrow shoulders, very wide hips and thick heavy thighs',
     inv: 'a muscular athletic body with very broad, square swimmer shoulders, a wide back and narrow hips',
     apple: 'a slightly chubby body with a soft belly and thick waist, average arms and legs',
@@ -113,3 +113,4 @@ export async function renderBase64(env, prompt) {
 }
 
 export const KNOWN_ITEMS = ITEM_EN;
+export { BODY_EN, COLOR_EN, ITEM_EN };

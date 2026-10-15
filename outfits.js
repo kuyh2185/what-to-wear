@@ -291,7 +291,8 @@ export const BODY={
       [/outer\|(블레이저|니트 가디건|셔츠 자켓)/,1.6,'앞을 열어 입는 아우터가 세로 라인을 만들어요'],
       [/top\|(옥스포드|체크 플란넬|니트 폴로|린넨 반팔 셔츠|피케)/,1.6,'힘 있는 셔츠 소재가 몸에 붙지 않아 깔끔해요'],
       [/bottom\|(스트레이트|와이드 슬랙스|울 슬랙스|기모 슬랙스|치노)/,1.6,'일자로 떨어지는 하의가 다리를 길어 보이게 해요'],
-      [/outer\|(숏 패딩|무스탕|플리스 자켓)/,.4,'부해 보이는 숏 아우터는 체격이 더 커 보여요'],
+      [/outer\|(숏 패딩|무스탕|플리스 자켓|블루종)/,.4,'부해 보이는 숏 아우터는 체격이 더 커 보여요'],
+      [/top\|(케이블 니트|기모 후드티|하프집업)/,.6,'두툼한 니트·후드는 상체를 더 커 보이게 해요'],
       [/top\|(그래픽 반팔티|민소매|기능성 반팔)/,.5,'몸에 붙는 얇은 티는 복부 라인이 드러나요'],
       [/bottom\|.*\|shorts/,.7,'짧은 반바지보다 무릎 기장이 안정적이에요']
     ]},
@@ -300,7 +301,8 @@ export const BODY={
       [/outer\|(블레이저|니트 가디건|셔츠 자켓|린넨 셔츠)/,1.6,'앞을 열어 입으면 세로 라인이 생겨 배가 덜 부각돼요'],
       [/top\|(옥스포드|체크 플란넬|린넨 반팔 셔츠|피케|헨리넥)/,1.5,'힘 있는 셔츠 소재가 배에 달라붙지 않아요'],
       [/top\|(롱슬리브 티|기능성 반팔|민소매|그래픽 반팔티)/,.5,'얇고 붙는 티는 배 라인이 그대로 드러나요'],
-      [/outer\|(숏 패딩|블루종)/,.6,'허리에서 끊기는 짧은 아우터는 배가 강조돼요']
+      [/outer\|(숏 패딩|블루종)/,.6,'허리에서 끊기는 짧은 아우터는 배가 강조돼요'],
+      [/top\|(케이블 니트|기모 후드티|하프집업)/,.6,'두툼한 니트·후드는 배 부분에 부피를 더해요']
     ]},
     {id:'thigh',label:'하체 튼튼',p:{sh:18,wa:16,hip:18.5,leg:11.5,arm:8},sum:'통 넓은 하의로 허벅지를 감싸고, 상체에 볼륨을 줘 균형을 맞춰요.',rules:[
       [/bottom\|.*\|wide/,2,'와이드 핏이 허벅지를 편하게 감싸요'],
@@ -349,14 +351,16 @@ export const BODY={
       [/outer\|.*\|long|outer\|(니트 가디건|블레이저|린넨 셔츠)/,1.8,'앞을 열어 입는 아우터가 세로 라인을 만들어 복부를 가려요'],
       [/dress\|셔츠 원피스|top\|(셔츠|블라우스)/,1.6,'몸에 붙지 않는 셔츠 소재가 복부를 편하게 덮어요'],
       [/bottom\|(슬랙스|와이드 데님|린넨 와이드|플레어|롱 데님)/,1.5,'일자로 떨어지는 하의가 다리를 길어 보이게 해요'],
-      [/top\|(크롭 반팔|슬림 롱슬리브)|dress\|니트 원피스/,.4,'몸에 붙거나 짧은 상의는 복부가 드러나요']
+      [/top\|(크롭 반팔|슬림 롱슬리브)|dress\|니트 원피스/,.4,'몸에 붙거나 짧은 상의는 복부가 드러나요'],
+      [/top\|(앙고라|꽈배기)|outer\|(숏 패딩|퀼팅|에코퍼)/,.6,'두툼하거나 허리에서 끊기는 옷은 복부에 부피를 더해요']
     ]},
     {id:'plus',label:'통통',p:{sh:18.5,wa:19,hip:21,leg:11.5,arm:8.5},sum:'앞을 연 긴 아우터와 A라인 실루엣, 일자 하의로 세로 라인을 만들어요.',rules:[
       [/outer\|.*\|long|outer\|(니트 가디건|블레이저|린넨 셔츠)/,1.8,'앞을 연 긴 아우터가 세로 라인을 만들어 날씬해 보여요'],
       [/dress\|(셔츠 원피스|플라워)|bottom\|(플레어|롱 데님|플리츠)/,1.6,'A라인으로 퍼지는 실루엣이 체형을 편하게 감싸요'],
       [/bottom\|(슬랙스|와이드 데님|린넨 와이드|부츠컷)/,1.5,'일자로 떨어지는 하의가 다리를 길어 보이게 해요'],
       [/top\|(크롭 반팔|슬림 롱슬리브|슬리브리스)|dress\|(니트 원피스|반팔 미니)/,.4,'몸에 붙거나 짧은 기장은 체형이 그대로 드러나요'],
-      [/bottom\|.*\|(skirt|shorts)/,.6,'짧은 하의보다 무릎 아래 기장이 안정적이에요']
+      [/bottom\|.*\|(skirt|shorts)/,.6,'짧은 하의보다 무릎 아래 기장이 안정적이에요'],
+      [/top\|(앙고라|꽈배기)|outer\|(숏 패딩|퀼팅|에코퍼)/,.6,'두툼한 소재는 체격이 더 커 보여요']
     ]}
   ]
 };
@@ -365,7 +369,8 @@ export const HEIGHTS=[
     [/outer\|.*\|short/,1.6,'짧은 아우터가 다리를 길어 보이게 해요'],
     [/outer\|.*\|long/,.5,'긴 아우터는 키가 작아 보일 수 있어요. 무릎 위 기장을 골라보세요'],
     [/top\|크롭 반팔/,1.5,'크롭 기장이 허리선을 올려줘요'],
-    [/bottom\|.*\|longskirt/,.7,'발목까지 오는 스커트는 굽 있는 신발과 함께 신어주세요']
+    [/bottom\|.*\|longskirt/,.7,'발목까지 오는 스커트는 굽 있는 신발과 함께 신어주세요'],
+    [/bottom\|.*\|wide/,.5,'통 넓은 바지는 다리가 짧아 보여요. 일자 핏을 골라보세요']
   ]},
   {id:'m',label:'보통',legLen:50,sum:'',rules:[]},
   {id:'t',label:'큰 편',legLen:56,sum:'롱 코트와 와이드 핏을 우선해요.',rules:[
@@ -411,10 +416,12 @@ export function pickColor(item,pal,used){
   return rand(o);
 }
 
-export function makeCombo(gender,t,bigGap,style,rules){
+// strict: leave out items the rules advise against (weight < 1) instead of only picking them less often
+export function makeCombo(gender,t,bigGap,style,rules,strict=false){
   const b=bandOf(t), items=DATA[gender], pal=rand(PALETTES[gender]);
   const pool=(cat,band)=>{
-    const inBand=items.filter(i=>i.cat===cat&&band>=i.b0&&band<=i.b1);
+    let inBand=items.filter(i=>i.cat===cat&&band>=i.b0&&band<=i.b1);
+    if(strict){const ok=inBand.filter(i=>weightOf(i,rules)>=1);if(ok.length)inBand=ok;}
     const st=inBand.filter(i=>i.styles.includes(style));
     return st.length?st:inBand;
   };
