@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>내일 뭐 입지?</title>
+<meta name="description" content="기온·성별·체형에 맞춰 실제 제품으로 코디 5벌을 추천해요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: thermometer + body-type controls on top drive five outfit cards; accent hue follows the temperature band */
+:root{
+  --bg:#eceef1; --surface:#ffffff; --ink:#14171c; --muted:#5b636f; --line:#d2d7de;
+  --skin:#e6cdb6; --fig-line:rgba(20,23,28,.22); --temp:#25917f;
+  --good:#2b7d48; --warn:#a85a0c; --scrim:rgba(14,16,20,.5);
+  --f-display:"Black Han Sans","IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101216; --surface:#191c22; --ink:#e8eaee; --muted:#9aa2ad; --line:#2b3039;
+  --skin:#c9a88b; --fig-line:rgba(255,255,255,.24); --good:#62c487; --warn:#e5a057; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101216; --surface:#191c22; --ink:#e8eaee; --muted:#9aa2ad; --line:#2b3039;
+  --skin:#c9a88b; --fig-line:rgba(255,255,255,.24); --good:#62c487; --warn:#e5a057; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+img{max-width:100%;display:block}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-block:28px 72px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:24px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(48px,9vw,104px);line-height:.92;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .q{color:var(--temp);transition:color .3s}
+.lede{margin:10px 0 0;color:var(--muted);max-width:46ch}
+
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.seg button{font:inherit;font-weight:700;font-size:15px;border:0;background:transparent;color:var(--muted);padding:9px 22px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--temp);outline-offset:2px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.thermo{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px 32px;align-items:center}
+.readout{display:flex;align-items:center;gap:10px}
+.deg{font-family:var(--f-display);font-size:clamp(72px,12vw,120px);line-height:.9;color:var(--temp);font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:right;transition:color .3s}
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:700 20px/1 var(--f-mono);cursor:pointer}
+.step:hover{border-color:var(--ink)}
+.ctl{display:flex;flex-direction:column;gap:14px;min-width:0}
+.band{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.band b{font-size:20px}
+.band .season{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+.tip{margin:0;color:var(--muted)}
+.tip strong{color:var(--ink);font-weight:500}
+.range{position:relative;padding-bottom:22px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:99px;margin:8px 0;
+  background:linear-gradient(90deg,#3557d6 0%,#3f6fe0 25%,#2f86c8 40%,#25917f 52%,#5f8f22 64%,#b07d0c 74%,#d9601a 84%,#d23a2c 100%);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--surface);border:3px solid var(--ink)}
+.ticks{position:absolute;left:13px;right:13px;bottom:0;height:16px;font:500 10.5px/1 var(--f-mono);color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(-50%)}
+.opts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.chk input{width:18px;height:18px;accent-color:var(--ink)}
+.fc{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.fc select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+
+.fit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 28px;align-items:start}
+.fit-groups{display:flex;flex-direction:column;gap:12px;min-width:0}
+.fg{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.fg > span{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500;width:2.6em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:14px;font-weight:500;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+.chips button:hover{border-color:var(--ink)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fit-sum{margin:0;color:var(--muted);font-size:14px;max-width:38ch}
+.fit-mini{display:flex;align-items:flex-end;gap:2px;height:96px}
+.fit-mini svg{height:96px;width:auto}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.bar h2{margin:0;font-size:20px;font-weight:700;text-wrap:balance}
+.bar h2 span{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:14px;margin-left:6px}
+.btn{font:inherit;font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:12px 22px;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn svg{width:18px;height:18px}
+.btn.spin svg{animation:spin .5s ease}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.new{animation:rise .35s ease}
+@keyframes rise{from{transform:translateY(8px)}to{transform:none}}
+.fig{background:color-mix(in srgb,var(--temp) 9%,var(--surface));display:flex;justify-content:center;padding:14px 0 6px;border-bottom:1px solid var(--line)}
+.fig svg{height:184px;width:auto;max-width:100%}
+.body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:0}
+.eyebrow{margin:0;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.eyebrow .st{font-weight:700;font-size:16px}
+.eyebrow .pal{font-size:11.5px;color:var(--muted);text-align:right}
+.pieces{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pieces li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;align-items:start;font-size:14px;line-height:1.35}
+.txt{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;min-width:0}
+.th{position:relative;width:14px;height:14px;border-radius:4px;border:1px solid var(--fig-line);margin-top:2px;background:var(--c);overflow:hidden}
+.th img{width:100%;height:100%;object-fit:cover;background:#fff}
+.th .dot{position:absolute;right:3px;bottom:3px;width:11px;height:11px;border-radius:50%;background:var(--c);border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.cat{font-size:11.5px;color:var(--muted);padding-top:1px}
+.nm{overflow-wrap:anywhere}
+.buy{display:block}
+.buy a{display:inline-block;margin-top:2px;font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;font-variant-numeric:tabular-nums}
+.buy a small{font-weight:400;color:var(--muted)}
+.buy a:hover{text-decoration:underline}
+.shop-on .pieces li{grid-template-columns:52px minmax(0,1fr);gap:10px}
+.shop-on .th{width:52px;height:52px;border-radius:9px;margin-top:0}
+.shop-on .txt{display:flex;flex-direction:column;gap:1px}
+.shop-on .cat{padding-top:0}
+.prod{display:block;margin-top:2px;font-size:12px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.prod:hover{color:var(--ink);text-decoration-color:var(--ink)}
+.fitnote{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;line-height:1.45}
+.fitnote .hd{display:flex;gap:6px;align-items:center;font-weight:500;font-size:12px;color:var(--muted)}
+.verdict{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:999px;padding:1px 9px;border:1px solid currentColor}
+.verdict.good{color:var(--good)} .verdict.warn{color:var(--warn)} .verdict.ok{color:var(--muted)}
+.note{display:grid;grid-template-columns:14px minmax(0,1fr);gap:4px}
+.note i{font-style:normal;font-weight:700}
+.note.g i{color:var(--good)} .note.w i{color:var(--warn)}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:2px}
+.links a{font-size:12px;font-weight:500;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.links a:hover{border-color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:4px 14px}
+.act{font:inherit;font-size:13px;color:var(--muted);background:none;border:0;padding:2px 0;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.act:hover{color:var(--ink)}
+.act svg{width:14px;height:14px}
+
+.more{display:flex;justify-content:center}
+footer{color:var(--muted);font-size:13px;max-width:72ch}
+footer p{margin:0 0 6px}
+
+/* compare sheet */
+.ov{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.ov-bg{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;width:min(1040px,100%);max-height:100%;overflow:auto;padding:20px 22px 24px;display:flex;flex-direction:column;gap:14px}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sheet-head p{margin:0;font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+.sheet-head h3{margin:2px 0 0;font-size:22px;text-wrap:balance}
+.x{font:inherit;font-size:22px;line-height:1;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;flex:none}
+.sheet-items{margin:0;color:var(--muted);font-size:14px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.cmpc{border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.cmpc.me{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.cmpc .fig{padding:12px 0 4px}
+.cmpc .fig svg{height:200px}
+.cmpc .in{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;line-height:1.45}
+.cmpc .nm2{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:700;font-size:14px}
+.cmpc .you{font-size:11px;font-weight:500;color:var(--muted)}
+
+@media (max-width:1080px) and (min-width:641px){
+  .cards{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .card{grid-column:span 2}
+  .card:nth-child(4){grid-column:2 / span 2}
+  .card:nth-child(5){grid-column:4 / span 2}
+}
+@media (max-width:860px){.fit{grid-template-columns:minmax(0,1fr)}.fit-mini{display:none}}
+@media (max-width:640px){
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .card{flex-direction:row}
+  .fig{border-bottom:0;border-right:1px solid var(--line);padding:12px 6px;align-items:center;flex:0 0 104px}
+  .fig svg{height:156px}
+  .panel{padding:18px 16px}
+  .thermo{grid-template-columns:minmax(0,1fr)}
+  .cmp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cmpc .fig{border-right:0;border-bottom:1px solid var(--line);flex:none}
+  .cmpc .fig svg{height:160px}
+  .sheet{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){.card.new,.btn.spin svg{animation:none}h1 .q,.deg{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>내일 뭐 입지<span class="q">?</span></h1>
+      <p class="lede">기온과 체형에 맞는 코디 5벌을 실제 제품과 함께 골라드려요. 마음에 드는 게 없으면 다른 조합을 눌러보세요.</p>
+    </div>
+    <div class="seg" role="group" aria-label="성별">
+      <button type="button" id="g-men" data-g="men" aria-pressed="true">남자</button>
+      <button type="button" id="g-women" data-g="women" aria-pressed="false">여자</button>
+    </div>
+  </header>
+
+  <section class="panel thermo" aria-label="내일 기온">
+    <div class="readout">
+      <div class="deg" id="deg" aria-live="polite">15°</div>
+      <div class="steps">
+        <button type="button" class="step" id="up" aria-label="1도 올리기">+</button>
+        <button type="button" class="step" id="down" aria-label="1도 내리기">−</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <div class="band"><b id="bandLabel">12~16°</b><span class="season" id="season">가을</span></div>
+      <p class="tip" id="tip"></p>
+      <div class="range">
+        <input type="range" id="temp" min="-10" max="35" step="1" value="15" aria-label="내일 기온(섭씨)">
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+      </div>
+      <div class="opts">
+        <label class="chk"><input type="checkbox" id="gap"> 일교차 10° 이상 (겉옷 챙기기)</label>
+        <span class="fc" id="fc" hidden>
+          <select id="city" aria-label="도시"></select>
+          <span id="fcText"></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel fit" aria-label="체형">
+    <div class="fit-groups">
+      <div class="fg"><span>체형</span><div class="chips" id="bodyChips" role="group" aria-label="체형"></div></div>
+      <div class="fg"><span>키</span><div class="chips" id="heightChips" role="group" aria-label="키"></div></div>
+      <p class="fit-sum" id="fitSum"></p>
+    </div>
+    <div class="fit-mini" id="fitMini" aria-hidden="true"></div>
+  </section>
+
+  <section aria-labelledby="listTitle" style="display:flex;flex-direction:column;gap:16px">
+    <div class="bar">
+      <h2 id="listTitle">추천 코디 <span id="count"></span></h2>
+      <button type="button" class="btn" id="refresh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+        다른 조합 보기
+      </button>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="more"><button type="button" class="btn" id="refresh2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+      5벌 더 섞기
+    </button></div>
+  </section>
+
+  <footer>
+    <p>기온 구간은 흔히 쓰는 ‘기온별 옷차림’ 기준을, 체형 포인트는 일반적인 스타일링 원칙을 따라요. 선택한 체형에 잘 맞는 아이템이 더 자주 나와요.</p>
+    <p>상품 사진과 가격은 네이버 쇼핑 검색 결과에서 가져와요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 다시 확인하세요.</p>
+  </footer>
+</div>
+
+<div class="ov" id="ov" hidden>
+  <div class="ov-bg" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+    <div class="sheet-head">
+      <div><p>같은 코디, 체형별로 보기</p><h3 id="ovTitle"></h3></div>
+      <button type="button" class="x" id="ovClose" data-close aria-label="닫기">×</button>
+    </div>
+    <p class="sheet-items" id="ovItems"></p>
+    <div class="cmp" id="cmp"></div>
+  </div>
+</div>
+
+<script>
+const COLORS={블랙:'#1f2023',화이트:'#f6f6f3',그레이:'#9b9ea3',차콜:'#45484e',네이비:'#27324c',베이지:'#d6c4a3',카멜:'#b0814e',브라운:'#6a4831',카키:'#6e6b45',올리브:'#5d6a37',아이보리:'#efe8d6',크림:'#f0e3c4',스카이블루:'#a8c5e2',연청:'#93acc9',중청:'#5c7ba3',진청:'#2e3e5d',버건디:'#6d2232',레드:'#b23a39',라벤더:'#c7bde0',핑크:'#e8b8c1',민트:'#bde0d2',버터:'#efda8c'};
+const NEUTRAL=['블랙','화이트','그레이','차콜','아이보리','베이지','네이비'];
+const BANDS=[
+  {min:-99,max:4,label:'4° 이하',season:'한겨울',tip:'패딩이나 두꺼운 코트에 목도리까지. 기모 안감이면 더 좋아요.'},
+  {min:5,max:8,label:'5~8°',season:'겨울',tip:'코트에 니트, 안에 히트텍을 받쳐 입으세요.'},
+  {min:9,max:11,label:'9~11°',season:'늦가을',tip:'트렌치코트·야상·가죽 자켓에 니트가 딱 맞는 날이에요.'},
+  {min:12,max:16,label:'12~16°',season:'가을',tip:'자켓이나 가디건 하나 걸치고 청바지, 슬랙스.'},
+  {min:17,max:19,label:'17~19°',season:'간절기',tip:'얇은 니트, 맨투맨, 가디건 정도면 충분해요.'},
+  {min:20,max:22,label:'20~22°',season:'봄·가을 낮',tip:'긴팔 티나 셔츠 한 장. 얇은 겉옷은 선택이에요.'},
+  {min:23,max:27,label:'23~27°',season:'초여름',tip:'반팔에 면바지, 얇은 셔츠.'},
+  {min:28,max:99,label:'28° 이상',season:'한여름',tip:'민소매, 반바지, 린넨으로 시원하게.'}
+];
+const TEMP_HEX=['#3557d6','#3f6fe0','#2f86c8','#25917f','#5f8f22','#b07d0c','#d9601a','#d23a2c'];
+const OUTER_CHANCE=[1,1,1,.92,.6,.35,0,0];
+const CAT={outer:'아우터',top:'상의',dress:'원피스',bottom:'하의',shoes:'신발',acc:'소품',leg:'레그'};
+const STYLES={men:['미니멀','캐주얼','스트릿','댄디','아메카지','고프코어'],women:['미니멀','캐주얼','러블리','오피스','스트릿','빈티지']};
+const PALETTES={
+  men:[
+    {name:'모노톤',c:['블랙','화이트','그레이','차콜']},
+    {name:'네이비 & 베이지',c:['네이비','베이지','화이트','아이보리']},
+    {name:'어스 톤',c:['브라운','베이지','카키','올리브','크림','아이보리']},
+    {name:'데님 & 화이트',c:['연청','중청','진청','화이트','네이비']},
+    {name:'웜 뉴트럴',c:['카멜','아이보리','브라운','베이지','화이트']},
+    {name:'그레이 톤온톤',c:['그레이','차콜','화이트','블랙']},
+    {name:'블랙 & 포인트',c:['블랙','화이트','버건디','레드']}
+  ],
+  women:[
+    {name:'모노톤',c:['블랙','화이트','그레이','차콜']},
+    {name:'크림 톤온톤',c:['아이보리','크림','베이지','화이트','카멜']},
+    {name:'파스텔',c:['라벤더','핑크','화이트','크림','스카이블루','버터','민트']},
+    {name:'어스 톤',c:['브라운','베이지','카키','크림','아이보리']},
+    {name:'데님 & 화이트',c:['연청','중청','진청','화이트','스카이블루']},
+    {name:'블랙 & 포인트',c:['블랙','화이트','버건디','레드']},
+    {name:'그레이 & 핑크',c:['그레이','핑크','화이트','아이보리']}
+  ]
+};
+
+// cat|name|colors|styles|bandFrom-bandTo|shape
+const RAW={men:`
+outer|롱 패딩|블랙,네이비,차콜|캐주얼,스트릿,고프코어,미니멀|0-0|long
+outer|숏 패딩|블랙,아이보리,카키,네이비|스트릿,고프코어,캐주얼,아메카지|0-0|short
+outer|울 발마칸 코트|차콜,카멜,네이비,블랙|미니멀,댄디|0-1|long
+outer|더블 코트|블랙,차콜,카멜|댄디,미니멀|0-1|long
+outer|무스탕|브라운,블랙|아메카지,캐주얼,스트릿|0-1|mid
+outer|플리스 자켓|아이보리,브라운,블랙|고프코어,캐주얼,아메카지|1-2|short
+outer|레더 자켓|블랙,브라운|스트릿,캐주얼,미니멀|1-2|short
+outer|트렌치코트|베이지,카키,블랙|댄디,미니멀|2-3|long
+outer|피쉬테일 야상|카키,올리브|아메카지,캐주얼|2-3|long
+outer|블루종|블랙,카키,네이비|미니멀,캐주얼,댄디|2-3|short
+outer|데님 자켓|연청,중청,진청|캐주얼,아메카지,스트릿|3-3|short
+outer|바람막이|블랙,카키,네이비,그레이|고프코어,스트릿|2-4|short
+outer|코치 자켓|블랙,네이비|스트릿|3-4|short
+outer|블레이저|네이비,차콜,베이지|댄디,미니멀|3-4|mid
+outer|셔츠 자켓|카키,브라운,차콜|아메카지,캐주얼|3-4|short
+outer|니트 가디건|그레이,네이비,브라운,아이보리|캐주얼,댄디,미니멀,아메카지|3-5|short
+outer|후드 집업|그레이,블랙|스트릿,캐주얼,고프코어|4-5|short
+outer|린넨 셔츠|화이트,베이지,스카이블루|미니멀,캐주얼,댄디|5-6|short
+top|터틀넥 니트|블랙,아이보리,차콜,카멜|미니멀,댄디|0-2|long
+top|케이블 니트|아이보리,네이비,그레이,브라운|캐주얼,아메카지,댄디|0-3|long
+top|기모 후드티|그레이,블랙,네이비|스트릿,캐주얼|0-2|long
+top|기모 맨투맨|그레이,네이비,차콜|캐주얼,스트릿|0-2|long
+top|하프집업 플리스|아이보리,브라운,블랙|고프코어,아메카지|0-2|long
+top|크루넥 니트|네이비,그레이,베이지,블랙|미니멀,댄디,캐주얼|1-4|long
+top|맨투맨|그레이,네이비,화이트,블랙|캐주얼,스트릿|2-4|long
+top|후드티|그레이,블랙,아이보리|스트릿,캐주얼,고프코어|2-4|long
+top|옥스포드 셔츠|화이트,스카이블루|댄디,캐주얼,아메카지,미니멀|2-5|long
+top|체크 플란넬 셔츠|레드,네이비,카키|아메카지,캐주얼|2-4|long
+top|롱슬리브 티|화이트,블랙,그레이|미니멀,캐주얼,스트릿,고프코어|3-5|long
+top|니트 폴로|네이비,베이지,블랙|댄디,미니멀|4-5|long
+top|헨리넥 티|아이보리,차콜|아메카지,캐주얼|4-5|long
+top|반팔 티셔츠|화이트,블랙,그레이,네이비|미니멀,캐주얼,스트릿,고프코어|6-7|short
+top|그래픽 반팔티|화이트,블랙|스트릿,캐주얼|6-7|short
+top|피케 셔츠|네이비,화이트,베이지|댄디,캐주얼|6-7|short
+top|반팔 니트 폴로|아이보리,네이비,블랙|미니멀,댄디|6-7|short
+top|린넨 반팔 셔츠|화이트,베이지,스카이블루|미니멀,댄디,캐주얼|6-7|short
+top|기능성 반팔|블랙,그레이|고프코어|6-7|short
+top|포켓 반팔티|아이보리,카키,네이비|아메카지|6-7|short
+top|민소매 티|화이트,블랙|스트릿,캐주얼|7-7|none
+bottom|기모 슬랙스|차콜,블랙,베이지|미니멀,댄디|0-1|pants
+bottom|기모 생지 데님|진청|캐주얼,아메카지,미니멀|0-1|pants
+bottom|코듀로이 팬츠|브라운,베이지,차콜|아메카지,캐주얼|0-3|pants
+bottom|울 슬랙스|차콜,그레이,네이비|댄디,미니멀|1-3|pants
+bottom|와이드 데님|연청,중청,진청|스트릿,캐주얼|1-5|wide
+bottom|스트레이트 데님|중청,진청,블랙|미니멀,캐주얼,아메카지|1-5|pants
+bottom|치노 팬츠|베이지,카키,네이비|캐주얼,댄디,아메카지|2-6|pants
+bottom|카고 팬츠|카키,블랙,베이지|스트릿,고프코어|0-5|wide
+bottom|나일론 트랙팬츠|블랙,네이비|고프코어,스트릿|3-6|pants
+bottom|와이드 슬랙스|블랙,그레이,베이지|미니멀,댄디|3-6|wide
+bottom|스웻팬츠|그레이,블랙|캐주얼,스트릿|2-4|pants
+bottom|퍼티그 팬츠|올리브,카키|아메카지|2-5|wide
+bottom|린넨 팬츠|베이지,화이트,블랙|미니멀,댄디|6-7|wide
+bottom|데님 버뮤다|연청,중청|스트릿,캐주얼|6-7|shorts
+bottom|면 반바지|베이지,네이비,카키,블랙|캐주얼,아메카지,미니멀,댄디|6-7|shorts
+bottom|나일론 쇼츠|블랙,카키|고프코어,스트릿|6-7|shorts
+shoes|첼시 부츠|블랙,브라운|미니멀,댄디|0-3|boots
+shoes|워커 부츠|블랙,브라운|아메카지,스트릿,캐주얼|0-3|boots
+shoes|고어텍스 트레일 러너|블랙,그레이,카키|고프코어|0-6|low
+shoes|더비 슈즈|블랙,브라운|댄디,미니멀|1-5|low
+shoes|페니 로퍼|블랙,브라운|댄디,미니멀,아메카지|2-7|low
+shoes|가죽 스니커즈|화이트|미니멀,캐주얼,댄디|1-6|low
+shoes|컨버스 하이|블랙,아이보리|캐주얼,스트릿,아메카지|2-6|low
+shoes|청키 스니커즈|그레이,화이트,블랙|스트릿|0-6|low
+shoes|러닝화|그레이,블랙,화이트|고프코어,캐주얼|2-7|low
+shoes|보트 슈즈|브라운|아메카지,댄디|5-7|low
+shoes|스포츠 샌들|블랙|고프코어,스트릿,캐주얼|7-7|sandal
+shoes|슬라이드|블랙,화이트|캐주얼,스트릿|7-7|sandal
+acc|머플러|그레이,카멜,네이비,버건디|미니멀,댄디,캐주얼,아메카지|0-1|
+acc|비니|블랙,그레이,아이보리,브라운|스트릿,캐주얼,아메카지,고프코어|0-2|
+acc|가죽 장갑|블랙,브라운|댄디,미니멀|0-0|
+acc|볼캡|블랙,네이비,베이지|캐주얼,스트릿,고프코어|3-7|
+acc|캔버스 토트백|아이보리,블랙|미니멀,캐주얼,아메카지|2-7|
+acc|크로스백|블랙|스트릿,고프코어|0-7|
+acc|버킷햇|베이지,블랙|스트릿,캐주얼,아메카지|5-7|
+acc|선글라스|블랙|미니멀,스트릿,댄디|6-7|
+acc|가죽 벨트|브라운,블랙|댄디,아메카지,미니멀|2-7|
+`,women:`
+outer|롱 패딩|블랙,아이보리,네이비|캐주얼,스트릿,미니멀|0-0|long
+outer|숏 패딩|아이보리,블랙,크림|캐주얼,스트릿,러블리|0-0|short
+outer|핸드메이드 롱코트|카멜,블랙,아이보리,그레이|미니멀,오피스|0-1|long
+outer|하프 울코트|아이보리,그레이,카멜|러블리,미니멀,오피스|0-1|mid
+outer|무스탕|브라운,아이보리|빈티지,캐주얼|0-1|mid
+outer|에코퍼 자켓|아이보리,브라운|러블리,빈티지|0-1|short
+outer|퀼팅 자켓|카키,블랙,브라운|빈티지,캐주얼|1-3|short
+outer|레더 자켓|블랙,브라운|스트릿,빈티지,미니멀|1-3|short
+outer|트렌치코트|베이지,블랙|미니멀,오피스,빈티지|2-3|long
+outer|트위드 자켓|아이보리,블랙,핑크|러블리,오피스|2-4|short
+outer|바람막이|블랙,카키|스트릿,캐주얼|2-4|short
+outer|크롭 데님 자켓|연청,중청|캐주얼,스트릿|3-4|short
+outer|블레이저|블랙,베이지,그레이|오피스,미니멀|3-4|mid
+outer|니트 가디건|아이보리,라벤더,핑크,그레이,크림|러블리,캐주얼,빈티지|3-5|short
+outer|후드 집업|그레이,블랙|스트릿,캐주얼|4-5|short
+outer|린넨 셔츠|화이트,스카이블루|미니멀,캐주얼,오피스|5-6|short
+outer|볼레로 가디건|화이트,핑크,블랙|러블리|5-6|short
+top|터틀넥 니트|블랙,아이보리,그레이,브라운|미니멀,오피스|0-2|long
+top|앙고라 니트|크림,핑크,라벤더|러블리|0-2|long
+top|기모 맨투맨|그레이,아이보리,네이비|캐주얼,스트릿|0-2|long
+top|꽈배기 니트|아이보리,브라운,크림|캐주얼,빈티지,러블리|0-3|long
+top|후드티|그레이,블랙|스트릿,캐주얼|1-4|long
+top|셔츠|화이트,스카이블루,블랙|오피스,미니멀,캐주얼|2-5|long
+top|블라우스|아이보리,화이트,핑크|러블리,오피스|3-5|long
+top|니트 베스트 레이어드|그레이,아이보리,네이비|빈티지,캐주얼,러블리|3-4|long
+top|맨투맨|그레이,화이트,네이비,민트|캐주얼,스트릿|2-4|long
+top|슬림 롱슬리브|화이트,블랙|미니멀,스트릿|3-5|long
+top|라운드 니트|버터,민트,라벤더,아이보리|러블리,캐주얼|4-5|long
+top|빈티지 그래픽 티|화이트,차콜|빈티지,스트릿|5-7|short
+top|반팔 니트|아이보리,버터,블랙|미니멀,오피스,러블리|5-6|short
+top|반팔 티|화이트,블랙,그레이|미니멀,캐주얼,스트릿|6-7|short
+top|크롭 반팔|화이트,블랙,핑크|스트릿,캐주얼|6-7|short
+top|반팔 블라우스|화이트,스카이블루,핑크|러블리,오피스|6-7|short
+top|슬리브리스|화이트,블랙|미니멀,스트릿,오피스|7-7|none
+top|프릴 슬리브리스|화이트,버터|러블리,빈티지|7-7|none
+bottom|기모 와이드 슬랙스|블랙,그레이,베이지|미니멀,오피스|0-2|wide
+bottom|코듀로이 팬츠|브라운,아이보리|빈티지,캐주얼|0-3|wide
+bottom|니트 롱스커트|그레이,아이보리,브라운|미니멀,러블리|0-2|longskirt
+bottom|와이드 데님|연청,중청,진청|캐주얼,스트릿,빈티지|1-5|wide
+bottom|부츠컷 데님|진청,블랙,중청|캐주얼,미니멀|1-5|pants
+bottom|울 미니스커트|그레이,블랙,브라운|러블리,빈티지|1-3|skirt
+bottom|플리츠 미디스커트|베이지,네이비,그레이|오피스,러블리|3-5|longskirt
+bottom|슬랙스|블랙,베이지,그레이|오피스,미니멀|2-6|pants
+bottom|카고 팬츠|카키,블랙,베이지|스트릿|0-5|wide
+bottom|롱 데님 스커트|중청,진청|빈티지,캐주얼|2-5|longskirt
+bottom|조거 팬츠|그레이|스트릿,캐주얼|2-4|pants
+bottom|린넨 와이드 팬츠|화이트,베이지,블랙|미니멀,캐주얼,오피스|6-7|wide
+bottom|데님 쇼츠|연청,중청|캐주얼,스트릿|6-7|shorts
+bottom|버뮤다 팬츠|베이지,블랙|미니멀,오피스|6-7|shorts
+bottom|플레어 롱스커트|아이보리,버터,블랙|러블리,빈티지|5-7|longskirt
+bottom|미니 스커트|블랙,화이트,연청|스트릿,러블리|6-7|skirt
+dress|니트 원피스|그레이,아이보리,브라운|미니멀,러블리,오피스|0-3|long-long
+dress|멜빵 원피스|중청,브라운|빈티지,캐주얼|2-4|long-long
+dress|셔츠 원피스|스카이블루,화이트,베이지|오피스,캐주얼,미니멀|3-6|long-long
+dress|플라워 원피스|아이보리,라벤더|러블리,빈티지|4-6|short-long
+dress|슬리브리스 원피스|블랙,화이트,버터|미니멀,러블리|6-7|none-long
+dress|반팔 미니 원피스|블랙,핑크,화이트|스트릿,러블리|6-7|short-short
+shoes|롱부츠|블랙,브라운|미니멀,빈티지,오피스,러블리|0-3|boots
+shoes|어그 부츠|베이지,브라운|캐주얼,러블리|0-1|boots
+shoes|앵클 부츠|블랙,브라운|미니멀,오피스,스트릿|1-3|boots
+shoes|로퍼|블랙,브라운|오피스,빈티지,미니멀|2-6|low
+shoes|메리제인|블랙,버건디|러블리,빈티지|3-6|low
+shoes|발레 플랫|블랙,아이보리,핑크|러블리,미니멀|4-6|low
+shoes|화이트 스니커즈|화이트|캐주얼,미니멀|1-6|low
+shoes|컨버스 로우|블랙,아이보리|캐주얼,스트릿,빈티지|3-6|low
+shoes|청키 스니커즈|화이트,그레이|스트릿|0-6|low
+shoes|슬링백|블랙,아이보리|오피스,미니멀|5-7|low
+shoes|뮬|블랙,베이지|미니멀,오피스,빈티지|5-7|low
+shoes|스트랩 샌들|블랙,베이지|미니멀,러블리,오피스|6-7|sandal
+shoes|플립플랍|블랙|캐주얼,스트릿|7-7|sandal
+acc|머플러|아이보리,그레이,카멜,버건디|미니멀,오피스,캐주얼,빈티지|0-1|
+acc|퍼 귀도리|아이보리,브라운|러블리|0-0|
+acc|니트 비니|아이보리,그레이,블랙|캐주얼,스트릿,빈티지|0-2|
+acc|레그워머|아이보리,그레이|러블리,스트릿|0-2|
+acc|숄더백|블랙,브라운|미니멀,오피스|0-7|
+acc|실크 스카프|버건디,네이비|빈티지,오피스|2-5|
+acc|리본 헤어핀|블랙,핑크|러블리|3-7|
+acc|볼캡|블랙,베이지|캐주얼,스트릿|3-7|
+acc|라탄백|베이지|캐주얼,러블리,빈티지|6-7|
+acc|선글라스|블랙|미니멀,스트릿|6-7|
+acc|진주 귀걸이|아이보리|러블리,오피스|0-7|
+`};
+
+// Long-running, widely sold products per item (brand|product). Links go to a store search, not a fixed listing.
+const PRODUCTS={
+  '숏 패딩':['노스페이스|1996 레트로 눕시 자켓'],
+  '울 발마칸 코트':['무신사 스탠다드|캐시미어 블렌드 오버사이즈 발마칸 코트'],
+  '플리스 자켓':['파타고니아|클래식 레트로-X 자켓','노스페이스|데날리 자켓'],
+  '블루종':['알파 인더스트리|MA-1 플라이트 자켓'],
+  '데님 자켓':['리바이스|트러커 자켓'],
+  '바람막이':['아크테릭스|베타 자켓','노스페이스|마운틴 자켓'],
+  '후드 집업':['챔피온|리버스 위브 후드 집업'],
+  '니트 가디건':['유니클로|엑스트라 파인 메리노 V넥 가디건'],
+  '린넨 셔츠':['유니클로|프리미엄 린넨 셔츠'],
+  '터틀넥 니트':['유니클로|엑스트라 파인 메리노 터틀넥 스웨터'],
+  '케이블 니트':['폴로 랄프로렌|케이블 니트 코튼 스웨터'],
+  '꽈배기 니트':['폴로 랄프로렌|케이블 니트 코튼 스웨터'],
+  '기모 후드티':['챔피온|리버스 위브 후드'],
+  '후드티':['챔피온|리버스 위브 후드'],
+  '맨투맨':['챔피온|리버스 위브 크루넥 스웨트셔츠'],
+  '기모 맨투맨':['챔피온|리버스 위브 크루넥 스웨트셔츠'],
+  '하프집업 플리스':['파타고니아|신칠라 스냅-T 풀오버'],
+  '크루넥 니트':['유니클로|엑스트라 파인 메리노 크루넥 스웨터'],
+  '옥스포드 셔츠':['폴로 랄프로렌|클래식 핏 옥스포드 셔츠','유니클로|옥스포드 셔츠'],
+  '셔츠':['유니클로|엑스트라 파인 코튼 브로드 셔츠'],
+  '체크 플란넬 셔츠':['유니클로|플란넬 체크 셔츠'],
+  '롱슬리브 티':['유니클로|U 크루넥 롱슬리브 T'],
+  '반팔 티셔츠':['유니클로|U 크루넥 반팔 T','무신사 스탠다드|베이식 크루 넥 반팔 티셔츠'],
+  '반팔 티':['유니클로|U 크루넥 반팔 T'],
+  '포켓 반팔티':['칼하트 WIP|포켓 티셔츠'],
+  '그래픽 반팔티':['스투시|베이직 스투시 티'],
+  '피케 셔츠':['라코스테|L.12.12 폴로 셔츠','프레드페리|M3600 폴로 셔츠'],
+  '와이드 슬랙스':['무신사 스탠다드|와이드 히든 밴딩 슬랙스'],
+  '슬랙스':['무신사 스탠다드 우먼즈|와이드 히든 밴딩 슬랙스'],
+  '스트레이트 데님':['리바이스|501 오리지널 진'],
+  '와이드 데님':['리바이스|실버탭 루즈 핏 진','유니클로|와이드 스트레이트 진'],
+  '부츠컷 데님':['리바이스|725 하이라이즈 부츠컷'],
+  '치노 팬츠':['디키즈|874 오리지널 워크 팬츠'],
+  '카고 팬츠':['칼하트 WIP|레귤러 카고 팬츠'],
+  '나일론 트랙팬츠':['아디다스|파이어버드 트랙 팬츠'],
+  '스웻팬츠':['나이키|클럽 플리스 조거'],
+  '조거 팬츠':['나이키|클럽 플리스 조거'],
+  '나일론 쇼츠':['파타고니아|배기스 쇼츠'],
+  '면 반바지':['디키즈|13인치 루즈 핏 워크 쇼츠'],
+  '데님 쇼츠':['리바이스|501 오리지널 쇼츠'],
+  '첼시 부츠':['닥터마틴|2976 첼시 부츠'],
+  '앵클 부츠':['닥터마틴|2976 첼시 부츠'],
+  '워커 부츠':['닥터마틴|1460 8홀 부츠','팀버랜드|6인치 프리미엄 부츠'],
+  '고어텍스 트레일 러너':['살로몬|XT-6 GTX'],
+  '더비 슈즈':['닥터마틴|1461 3홀 슈즈'],
+  '페니 로퍼':['지 에이치 바스|위준스 라슨 페니 로퍼'],
+  '로퍼':['지 에이치 바스|위준스 페니 로퍼'],
+  '가죽 스니커즈':['아디다스|스탠스미스','아디다스|삼바 OG'],
+  '화이트 스니커즈':['아디다스|스탠스미스',"나이키|에어포스 1 '07"],
+  '컨버스 하이':['컨버스|척 70 하이'],
+  '컨버스 로우':['컨버스|척 70 로우'],
+  '청키 스니커즈':['뉴발란스|530','뉴발란스|2002R'],
+  '러닝화':['아식스|젤-카야노 14','뉴발란스|990v6'],
+  '보트 슈즈':['스페리|오센틱 오리지널 보트 슈즈'],
+  '스포츠 샌들':['테바|허리케인 XLT2'],
+  '스트랩 샌들':['테바|오리지널 유니버설'],
+  '슬라이드':['아디다스|아딜렛 아쿠아'],
+  '플립플랍':['하바이아나스|탑 플립플랍'],
+  '어그 부츠':['어그|클래식 미니'],
+  '메리제인':['닥터마틴|8065 메리제인'],
+  '발레 플랫':['레페토|산드리옹 발레리나'],
+  '비니':['칼하트 WIP|왓치 햇'],
+  '니트 비니':['칼하트 WIP|왓치 햇'],
+  '캔버스 토트백':['L.L.Bean|보트 앤 토트'],
+  '크로스백':['아크테릭스|맨티스 2 웨이스트팩']
+};
+
+// Body types. p = silhouette proportions (half-widths in figure units). rules = [regex on "cat|name|shape", weight, note]
+const BODY={
+  men:[
+    {id:'slim',label:'마른 편',p:{sh:17,wa:13,hip:13,leg:7.5,arm:6.5},sum:'도톰한 니트, 부피감 있는 짧은 아우터, 와이드 핏 하의를 더 자주 추천해요.',rules:[
+      [/top\|(케이블 니트|크루넥 니트|기모 맨투맨|기모 후드티|하프집업 플리스|체크 플란넬)/,2,'도톰한 상의가 마른 체형에 볼륨을 더해요'],
+      [/outer\|(숏 패딩|플리스 자켓|무스탕|블루종)/,2,'부피감 있는 짧은 아우터가 상체를 탄탄해 보이게 해요'],
+      [/bottom\|.*\|wide/,1.6,'와이드 핏 하의가 가는 다리를 보완해요'],
+      [/top\|민소매/,.3,'민소매는 마른 팔이 도드라져요'],
+      [/top\|(롱슬리브 티|반팔 티셔츠)/,.8,'얇은 단색 티 한 장은 체형이 그대로 드러나요. 레이어드를 추천해요']
+    ]},
+    {id:'avg',label:'보통',p:{sh:18,wa:15.5,hip:15,leg:9,arm:8},sum:'체형 가리지 않고 고르게 추천해요.',rules:[]},
+    {id:'muscle',label:'근육형',p:{sh:21.5,wa:16,hip:15,leg:10,arm:9.5},sum:'카라·V 라인 상의와 통 넓은 하의로 넓은 어깨와 균형을 맞춰요.',rules:[
+      [/bottom\|(와이드|스트레이트|카고|퍼티그)/,1.8,'통 넓은 하의가 넓은 어깨와 균형을 맞춰줘요'],
+      [/top\|(니트 폴로|옥스포드 셔츠|헨리넥|피케|반팔 니트 폴로)/,1.8,'카라·V 라인이 어깨 폭을 덜 부각해요'],
+      [/outer\|(블레이저|트렌치코트|울 발마칸|니트 가디건)/,1.6,'세로로 떨어지는 아우터가 상체 부피를 정리해줘요'],
+      [/outer\|(숏 패딩|무스탕|플리스 자켓)/,.4,'부피감 있는 짧은 아우터는 상체를 더 커 보이게 해요'],
+      [/top\|(케이블 니트|기모 후드티|하프집업)/,.6,'두툼한 니트·후드는 상체가 더 커 보여요']
+    ]},
+    {id:'chubby',label:'통통',p:{sh:19.5,wa:20,hip:18,leg:10.5,arm:9.5},sum:'긴 아우터와 셔츠, 일자 핏 하의로 세로 라인을 만들어요.',rules:[
+      [/outer\|.*\|long/,2,'긴 아우터의 세로 라인이 슬림해 보이게 해요'],
+      [/outer\|(블레이저|니트 가디건|셔츠 자켓)/,1.6,'앞을 열어 입는 아우터가 세로 라인을 만들어요'],
+      [/top\|(옥스포드|체크 플란넬|니트 폴로|린넨 반팔 셔츠|피케)/,1.6,'힘 있는 셔츠 소재가 몸에 붙지 않아 깔끔해요'],
+      [/bottom\|(스트레이트|와이드 슬랙스|울 슬랙스|기모 슬랙스|치노)/,1.6,'일자로 떨어지는 하의가 다리를 길어 보이게 해요'],
+      [/outer\|(숏 패딩|무스탕|플리스 자켓)/,.4,'부해 보이는 숏 아우터는 체격이 더 커 보여요'],
+      [/top\|(그래픽 반팔티|민소매|기능성 반팔)/,.5,'몸에 붙는 얇은 티는 복부 라인이 드러나요'],
+      [/bottom\|.*\|shorts/,.7,'짧은 반바지보다 무릎 기장이 안정적이에요']
+    ]}
+  ],
+  women:[
+    {id:'avg',label:'보통',p:{sh:16.5,wa:13,hip:16,leg:8.5,arm:6.5},sum:'체형 가리지 않고 고르게 추천해요.',rules:[]},
+    {id:'rect',label:'일자형',p:{sh:16,wa:14.5,hip:15,leg:8.5,arm:6.5},sum:'벨트·플레어 스커트·볼륨 블라우스로 허리 곡선을 만들어요.',rules:[
+      [/outer\|트렌치코트/,1.8,'허리 벨트를 묶으면 허리 라인이 생겨요'],
+      [/top\|(블라우스|반팔 블라우스|프릴)/,1.6,'볼륨 있는 상의가 곡선을 만들어줘요'],
+      [/bottom\|(플레어|플리츠|울 미니)/,1.8,'퍼지는 스커트가 허리를 잘록해 보이게 해요'],
+      [/dress\|(셔츠 원피스|플라워)/,1.6,'허리를 잡아주는 원피스가 라인을 살려요'],
+      [/dress\|니트 원피스/,.6,'일자 니트 원피스는 밋밋해 보일 수 있어요. 벨트를 더해보세요']
+    ]},
+    {id:'hour',label:'모래시계형',p:{sh:17,wa:11.5,hip:17.5,leg:9,arm:6.5},sum:'몸에 맞는 니트와 원피스로 허리 곡선을 그대로 살려요.',rules:[
+      [/top\|(터틀넥|슬림 롱슬리브|라운드 니트|반팔 니트)/,1.8,'몸에 맞는 니트가 허리 곡선을 살려요'],
+      [/dress\|(니트 원피스|슬리브리스 원피스)/,2,'실루엣이 드러나는 원피스가 가장 잘 어울려요'],
+      [/bottom\|(부츠컷|슬랙스|플레어)/,1.5,'하이웨이스트 하의로 허리를 강조해요'],
+      [/top\|(후드티|기모 맨투맨|맨투맨)/,.6,'박시한 상의는 허리 라인을 가려요. 앞부분만 넣어 입어보세요'],
+      [/outer\|(롱 패딩|숏 패딩)/,.7,'패딩은 곡선을 가려요. 허리 스트링을 조여주세요']
+    ]},
+    {id:'pear',label:'하체 통통',p:{sh:15,wa:12.5,hip:19.5,leg:10.5,arm:6.5},sum:'와이드 팬츠·롱스커트로 하체를 덮고, 짧은 아우터로 시선을 위로 올려요.',rules:[
+      [/bottom\|.*\|(wide|longskirt)/,2,'와이드·롱 기장 하의가 하체 라인을 자연스럽게 덮어요'],
+      [/top\|(블라우스|반팔 블라우스|프릴|꽈배기)/,1.6,'상체에 볼륨을 줘서 상하 밸런스가 맞아요'],
+      [/outer\|(트위드|크롭 데님|숏 패딩|에코퍼|레더)/,1.6,'짧은 아우터가 시선을 위로 올려요'],
+      [/bottom\|.*\|(skirt|shorts)/,.4,'짧은 하의는 허벅지가 강조될 수 있어요'],
+      [/bottom\|(부츠컷|조거)/,.6,'허벅지에 붙는 핏은 하체가 도드라져요']
+    ]},
+    {id:'inv',label:'어깨 넓음',p:{sh:19.5,wa:13,hip:14,leg:8.5,arm:7},sum:'볼륨 있는 하의와 V 라인 상의로 어깨와 균형을 맞춰요.',rules:[
+      [/bottom\|.*\|(wide|longskirt|skirt)/,1.8,'볼륨 있는 하의가 넓은 어깨와 균형을 맞춰요'],
+      [/top\|(셔츠|블라우스)|outer\|(니트 가디건|린넨 셔츠)/,1.5,'V 라인으로 열린 앞섶이 어깨를 좁아 보이게 해요'],
+      [/outer\|(트렌치코트|핸드메이드 롱코트)/,1.5,'어깨에 힘이 없는 롱 코트가 잘 어울려요'],
+      [/outer\|(볼레로|블레이저|에코퍼)|top\|(크롭 반팔|프릴)/,.5,'어깨에 볼륨이 생기는 디자인은 상체가 더 넓어 보여요']
+    ]},
+    {id:'apple',label:'복부 고민',p:{sh:17,wa:18.5,hip:16.5,leg:9,arm:7},sum:'앞을 여는 긴 아우터와 셔츠 소재로 세로 라인을 만들어 복부를 덮어요.',rules:[
+      [/outer\|.*\|long|outer\|(니트 가디건|블레이저|린넨 셔츠)/,1.8,'앞을 열어 입는 아우터가 세로 라인을 만들어 복부를 가려요'],
+      [/dress\|셔츠 원피스|top\|(셔츠|블라우스)/,1.6,'몸에 붙지 않는 셔츠 소재가 복부를 편하게 덮어요'],
+      [/bottom\|(슬랙스|와이드 데님|린넨 와이드|플레어|롱 데님)/,1.5,'일자로 떨어지는 하의가 다리를 길어 보이게 해요'],
+      [/top\|(크롭 반팔|슬림 롱슬리브)|dress\|니트 원피스/,.4,'몸에 붙거나 짧은 상의는 복부가 드러나요']
+    ]}
+  ]
+};
+const HEIGHTS=[
+  {id:'s',label:'작은 편',legLen:44,sum:'짧은 아우터와 하이웨이스트 하의를 우선해요.',rules:[
+    [/outer\|.*\|short/,1.6,'짧은 아우터가 다리를 길어 보이게 해요'],
+    [/outer\|.*\|long/,.5,'긴 아우터는 키가 작아 보일 수 있어요. 무릎 위 기장을 골라보세요'],
+    [/top\|크롭 반팔/,1.5,'크롭 기장이 허리선을 올려줘요'],
+    [/bottom\|.*\|longskirt/,.7,'발목까지 오는 스커트는 굽 있는 신발과 함께 신어주세요']
+  ]},
+  {id:'m',label:'보통',legLen:50,sum:'',rules:[]},
+  {id:'t',label:'큰 편',legLen:56,sum:'롱 코트와 와이드 핏을 우선해요.',rules:[
+    [/outer\|.*\|long/,1.6,'롱 코트가 큰 키에 잘 어울려요'],
+    [/bottom\|.*\|wide/,1.3,'와이드 핏이 길이감을 살려줘요']
+  ]}
+];
+
+const DATA={};
+for(const g in RAW){
+  DATA[g]=RAW[g].trim().split('\n').map(l=>{
+    const [cat,name,c,s,b,shape]=l.trim().split('|');
+    const [b0,b1]=b.split('-').map(Number);
+    return {cat,name,colors:c.split(','),styles:s.split(','),b0,b1,shape:shape||''};
+  });
+}
+
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const bandOf=t=>BANDS.findIndex(b=>t>=b.min&&t<=b.max);
+const keyOf=i=>`${i.cat}|${i.name}|${i.shape}`;
+const weightOf=(i,rules)=>rules.reduce((w,[re,x])=>re.test(keyOf(i))?w*x:w,1);
+function wpick(pool,rules){
+  const ws=pool.map(i=>weightOf(i,rules)), tot=ws.reduce((a,b)=>a+b,0);
+  let r=Math.random()*tot;
+  for(let i=0;i<pool.length;i++){r-=ws[i];if(r<=0)return pool[i];}
+  return pool[pool.length-1];
+}
+function evaluate(c,rules){
+  let score=1; const good=[],bad=[];
+  for(const p of c.pieces){const k=keyOf(p);
+    for(const [re,x,note] of rules)if(re.test(k)){score*=x;(x>1?good:bad).push(note);}
+  }
+  const v=score>=1.5?['good','잘 어울려요']:score<.75?['warn','주의']:['ok','무난해요'];
+  return {score,cls:v[0],label:v[1],good:[...new Set(good)],bad:[...new Set(bad)]};
+}
+
+function pickColor(item,pal,used){
+  let o=item.colors.filter(c=>pal.includes(c)&&!used.has(c));
+  if(!o.length)o=item.colors.filter(c=>NEUTRAL.includes(c)&&!used.has(c));
+  if(!o.length)o=item.colors.filter(c=>!used.has(c));
+  if(!o.length)o=item.colors;
+  return rand(o);
+}
+
+function makeCombo(gender,t,bigGap,style,rules){
+  const b=bandOf(t), items=DATA[gender], pal=rand(PALETTES[gender]);
+  const pool=(cat,band)=>{
+    const inBand=items.filter(i=>i.cat===cat&&band>=i.b0&&band<=i.b1);
+    const st=inBand.filter(i=>i.styles.includes(style));
+    return st.length?st:inBand;
+  };
+  const used=new Set(), pieces=[];
+  const add=(cat,band=b)=>{
+    const p=pool(cat,band); if(!p.length)return null;
+    const it=wpick(p,rules), color=pickColor(it,pal.c,used);
+    used.add(color);
+    const piece={...it,color};
+    if(PRODUCTS[it.name])piece.product=rand(PRODUCTS[it.name]);
+    pieces.push(piece); return piece;
+  };
+  let chance=OUTER_CHANCE[b], outerBand=b;
+  if(bigGap){chance=Math.max(chance,b>=7?.6:1); outerBand=Math.max(0,bandOf(t-8));}
+  if(Math.random()<chance)add('outer',outerBand);
+  const dressPool=gender==='women'?pool('dress',b):[];
+  let lower=null;
+  if(dressPool.length&&dressPool.some(d=>d.styles.includes(style))&&Math.random()<.28){lower=add('dress');}
+  else{add('top');lower=add('bottom');}
+  add('shoes');
+  if(b===0||Math.random()<.7)add('acc');
+  const bareLegs=lower&&(lower.cat==='dress'||lower.shape==='skirt'||lower.shape==='shorts');
+  if(gender==='women'&&bareLegs&&b<=3)pieces.push({cat:'leg',name:b<=1?'기모 스타킹':'스타킹',color:'블랙',shape:''});
+  const order=['outer','top','dress','bottom','shoes','acc','leg'];
+  pieces.sort((a,c)=>order.indexOf(a.cat)-order.indexOf(c.cat));
+  return {style,pal:pal.name,band:b,pieces,sig:style+':'+pieces.map(p=>p.color+p.name).join('/')};
+}
+
+// ---------- figure ----------
+function figureSVG(c,body,legLen){
+  const g=k=>c&&c.pieces.find(p=>p.cat===k);
+  const outer=g('outer'),top=g('top'),dress=g('dress'),bottom=g('bottom'),shoes=g('shoes'),leg=g('leg');
+  const {sh,wa,hip,leg:lw,arm:aw}=body.p, F=74+legLen, gap=1.5;
+  const lc=40-gap-lw/2, rc=40+gap+lw/2;
+  const hx=p=>COLORS[p.color]||'#888';
+  const S='var(--skin)', st='stroke="var(--fig-line)" stroke-width="0.8"';
+  const legFill=leg?COLORS[leg.color]:S, legOp=leg?' opacity=".85"':'';
+  const ax=40-sh-aw-.5;
+  let s=`<ellipse cx="40" cy="${F+4}" rx="${hip+7}" ry="3" fill="var(--fig-line)" opacity=".5"/>`;
+  s+=`<rect x="${ax}" y="29" width="${aw}" height="44" rx="${aw/2}" fill="${S}"/><rect x="${80-ax-aw}" y="29" width="${aw}" height="44" rx="${aw/2}" fill="${S}"/>`;
+  s+=`<rect x="${lc-lw/2}" y="72" width="${lw}" height="${legLen+2}" rx="3" fill="${legFill}"${legOp}/><rect x="${rc-lw/2}" y="72" width="${lw}" height="${legLen+2}" rx="3" fill="${legFill}"${legOp}/>`;
+  s+=`<rect x="36.5" y="19" width="7" height="8" fill="${S}"/><circle cx="40" cy="12.5" r="9" fill="${S}"/>`;
+  const torso=(end,f)=>`<path d="M${40-sh} 29 Q${40-sh} 25 ${40-sh+4} 25 H34 Q40 31 46 25 H${40+sh-4} Q${40+sh} 25 ${40+sh} 29 L${40+wa+1} 50 L${40+hip+1} ${end} H${40-hip-1} L${40-wa-1} 50 Z" fill="${f}" ${st}/>`;
+  if(!c){ // bare body for the picker preview
+    s+=torso(72,'color-mix(in srgb,var(--ink) 16%,var(--surface))');
+    s+=`<path d="M${40-hip-1} 68 H${40+hip+1} L${40+gap+lw+1} ${F} H${40+gap} L40 80 L${40-gap} ${F} H${40-gap-lw-1} Z" fill="color-mix(in srgb,var(--ink) 30%,var(--surface))"/>`;
+    return `<svg viewBox="0 0 80 ${F+9}" aria-hidden="true">${s}</svg>`;
+  }
+  if(bottom&&!dress){const f=hx(bottom), h0=`M${40-hip-1} 68 H${40+hip+1}`;
+    const P={
+      wide:`${h0} L${40+gap+lw+4} ${F} H${40+gap+1} L40 82 L${40-gap-1} ${F} H${40-gap-lw-4} Z`,
+      shorts:`${h0} L${40+hip+2.5} 92 H41 L40 80 L39 92 H${40-hip-2.5} Z`,
+      skirt:`${h0} L${40+hip+5} 96 H${40-hip-5} Z`,
+      longskirt:`${h0} L${40+hip+7} ${F-6} H${40-hip-7} Z`,
+      pants:`${h0} L${40+gap+lw+1} ${F} H${40+gap} L40 80 L${40-gap} ${F} H${40-gap-lw-1} Z`
+    };
+    s+=`<path d="${P[bottom.shape]||P.pants}" fill="${f}" ${st}/>`;
+  }
+  const t=dress||top;
+  if(t){const f=hx(t); const [sleeve,len]=dress?t.shape.split('-'):[t.shape];
+    const sx=40-sh-aw-2, sw=aw+3.5;
+    if(sleeve==='long')s+=`<rect x="${sx}" y="27" width="${sw}" height="44" rx="4" fill="${f}" ${st}/><rect x="${80-sx-sw}" y="27" width="${sw}" height="44" rx="4" fill="${f}" ${st}/>`;
+    else if(sleeve==='short')s+=`<rect x="${sx}" y="27" width="${sw}" height="16" rx="4" fill="${f}" ${st}/><rect x="${80-sx-sw}" y="27" width="${sw}" height="16" rx="4" fill="${f}" ${st}/>`;
+    if(dress){const y=len==='short'?98:F-8, flare=len==='short'?5:9;
+      s+=`<path d="M${40-hip} 60 H${40+hip} L${40+hip+flare} ${y} H${40-hip-flare} Z" fill="${f}" ${st}/>`;}
+    s+=torso(dress?66:72,f);
+  }
+  if(shoes){const f=hx(shoes), L=lc-1.5, R=rc+1.5;
+    if(shoes.shape==='boots')s+=[L,R].map(x=>`<rect x="${x-lw/2-1.5}" y="${F-20}" width="${lw+3}" height="22" rx="2.5" fill="${f}" ${st}/><rect x="${x-7.5}" y="${F-2}" width="15" height="5" rx="2.5" fill="${f}" ${st}/>`).join('');
+    else if(shoes.shape==='sandal')s+=[L,R].map(x=>`<rect x="${x-6.5}" y="${F-5}" width="13" height="3" rx="1.5" fill="${f}"/><rect x="${x-7.5}" y="${F}" width="15" height="3" rx="1.5" fill="${f}" ${st}/>`).join('');
+    else s+=[L,R].map(x=>`<rect x="${x-7.5}" y="${F-4.5}" width="15" height="7.5" rx="3.5" fill="${f}" ${st}/>`).join('');
+  }
+  if(outer){const f=hx(outer), y={long:F-12,mid:94,short:76}[outer.shape]||80, flare=outer.shape==='long'?3:0;
+    const ow=Math.max(sh,wa,outer.shape==='short'?0:hip)+1.5, sx=40-sh-aw-3.5, sw=aw+5.5;
+    s+=`<rect x="${sx}" y="26" width="${sw}" height="47" rx="4.5" fill="${f}" ${st}/><rect x="${80-sx-sw}" y="26" width="${sw}" height="47" rx="4.5" fill="${f}" ${st}/>`;
+    s+=`<path d="M${40-sh-1} 29 Q${40-sh-1} 24 ${40-sh+4} 24 H33.5 L${35+flare/2} ${y} H${40-ow-flare} Z" fill="${f}" ${st}/><path d="M${40+sh+1} 29 Q${40+sh+1} 24 ${40+sh-4} 24 H46.5 L${45-flare/2} ${y} H${40+ow+flare} Z" fill="${f}" ${st}/>`;
+  }
+  return `<svg viewBox="0 0 80 ${F+9}" role="img" aria-label="${body.label} 체형 코디 실루엣">${s}</svg>`;
+}
+
+// ---------- links ----------
+const msUrl=q=>`https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`;
+const prodName=p=>p.product.replace('|',' ');
+function links(c,gender){
+  const g=gender==='men'?'남자':'여자';
+  const main=c.pieces.filter(p=>['outer','top','dress','bottom'].includes(p.cat));
+  const withProd=main.find(p=>p.product);
+  const q=withProd?`${prodName(withProd)} ${g} 코디`:`${g} ${main.slice(0,2).map(p=>p.name).join(' ')} 코디`;
+  const tag=(main[0]?main[0].name:'데일리').replace(/\s/g,'')+'코디';
+  return `<a href="https://www.pinterest.co.kr/search/pins/?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">Pinterest 착용샷</a>`+
+    `<a href="https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}/" target="_blank" rel="noopener">#${tag}</a>`;
+}
+
+const SWAP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a2 2 0 0 1 2-2h16"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a2 2 0 0 1-2 2H3"/></svg>';
+const BODY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 9v12M3 12h6M18 9v12M14.5 12h7"/></svg>';
+
+function notesHTML(ev,max){
+  const n=[...ev.good.map(t=>['g','✓',t]),...ev.bad.map(t=>['w','!',t])];
+  if(ev.cls==='warn')n.sort((a,b)=>a[0]==='w'?-1:1);
+  return n.slice(0,max).map(([k,i,t])=>`<div class="note ${k}"><i>${i}</i><span>${t}</span></div>`).join('');
+}
+
+// ---------- shop photos (Naver Shopping via Cloudflare Worker) ----------
+const API_BASE='https://what-to-wear-shop.kuyh2185.workers.dev';
+const SHOP=new Map(), PENDING=new Set();
+const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const qOf=p=>p.product?prodName(p):`${state.gender==='men'?'남성':'여성'} ${p.color} ${p.name}`;
+const thumbHTML=it=>it?`<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" referrerpolicy="no-referrer"><span class="dot"></span>`:'';
+const buyHTML=it=>it?`<a href="${esc(it.link)}" target="_blank" rel="noopener" title="${esc(it.title)}">${it.price?it.price.toLocaleString('ko-KR')+'원':'가격 보기'}${it.mall?` <small>· ${esc(it.mall)}</small>`:''} ↗</a>`:'';
+function paintShop(q,it){
+  for(const el of document.querySelectorAll(`[data-q="${CSS.escape(q)}"]`))
+    el.innerHTML=el.classList.contains('th')?thumbHTML(it):buyHTML(it);
+}
+function loadShop(){
+  if(!API_BASE)return;
+  const qs=[...new Set(state.combos.flatMap(c=>c.pieces.map(qOf)))].filter(q=>!SHOP.has(q)&&!PENDING.has(q));
+  for(let i=0;i<qs.length;i+=8){
+    const chunk=qs.slice(i,i+8);
+    chunk.forEach(q=>PENDING.add(q));
+    fetch(API_BASE+'/search?'+chunk.map(q=>'q='+encodeURIComponent(q)).join('&'))
+      .then(r=>r.ok?r.json():null)
+      .then(j=>{if(j&&j.results)document.body.classList.add('shop-on');
+        for(const res of (j&&j.results)||[]){
+        const it=(res.items||[]).find(x=>/^https:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
+        SHOP.set(res.q,it); paintShop(res.q,it);
+      }})
+      .catch(()=>{})
+      .finally(()=>chunk.forEach(q=>PENDING.delete(q)));
+  }
+}
+
+function cardHTML(c,i,isNew){
+  const li=c.pieces.map(p=>{const q=qOf(p), it=SHOP.get(q);
+    return `<li><span class="th" style="--c:${COLORS[p.color]}" data-q="${esc(q)}">${thumbHTML(it)}</span><span class="txt"><span class="cat">${CAT[p.cat]}</span><span class="nm">${p.color} ${p.name}${p.product?`<a class="prod" href="${msUrl(prodName(p))}" target="_blank" rel="noopener">${prodName(p)} ↗</a>`:''}${API_BASE?`<span class="buy" data-q="${esc(q)}">${buyHTML(it)}</span>`:''}</span></span></li>`;}).join('');
+  const body=curBody(), ev=evaluate(c,curRules());
+  const fit=(ev.good.length||ev.bad.length)?`<div class="fitnote"><div class="hd">${body.label}${curHeight().id!=='m'?' · 키 '+curHeight().label:''} <span class="verdict ${ev.cls}">${ev.label}</span></div>${notesHTML(ev,2)}</div>`:'';
+  return `<article class="card${isNew?' new':''}"><div class="fig">${figureSVG(c,body,curHeight().legLen)}</div><div class="body">
+    <p class="eyebrow"><span class="st">${c.style}</span><span class="pal">${c.pal}</span></p>
+    <ul class="pieces">${li}</ul>
+    ${fit}
+    <div class="links">${links(c,state.gender)}</div>
+    <div class="acts">
+      <button type="button" class="act" data-cmp="${i}">${BODY_ICON}체형별로 보기</button>
+      <button type="button" class="act" data-swap="${i}">${SWAP_ICON}이 코디만 바꾸기</button>
+    </div>
+  </div></article>`;
+}
+
+// ---------- state ----------
+const store={get(k,d){try{const v=localStorage.getItem('nmi.'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('nmi.'+k,JSON.stringify(v));}catch(e){}}};
+const state={gender:store.get('gender','men'),temp:store.get('temp',15),gap:store.get('gap',false),
+  body:{men:store.get('body.men','avg'),women:store.get('body.women','avg')},height:store.get('height','m'),combos:[],seen:new Set()};
+const $=id=>document.getElementById(id);
+const curBody=()=>BODY[state.gender].find(b=>b.id===state.body[state.gender])||BODY[state.gender][0];
+const curHeight=()=>HEIGHTS.find(h=>h.id===state.height)||HEIGHTS[1];
+const rulesFor=b=>b.rules.concat(curHeight().rules);
+const curRules=()=>rulesFor(curBody());
+
+function freshCombo(style,taken){
+  let c;
+  for(let k=0;k<40;k++){
+    c=makeCombo(state.gender,state.temp,state.gap,style,curRules());
+    if(!state.seen.has(c.sig)&&!taken.has(c.sig))break;
+  }
+  if(state.seen.size>400)state.seen.clear();
+  state.seen.add(c.sig);
+  return c;
+}
+function generateAll(){
+  const styles=shuffle(STYLES[state.gender]).slice(0,5), taken=new Set();
+  state.combos=styles.map(s=>{const c=freshCombo(s,taken);taken.add(c.sig);return c;});
+  renderCards(true);
+}
+function swapOne(i){
+  const usedStyles=new Set(state.combos.map((c,j)=>j!==i&&c.style));
+  const free=STYLES[state.gender].filter(s=>!usedStyles.has(s));
+  const taken=new Set(state.combos.map(c=>c.sig));
+  state.combos[i]=freshCombo(rand(free.length?free:STYLES[state.gender]),taken);
+  renderCards(false,i);
+}
+function renderCards(all,only){
+  $('cards').innerHTML=state.combos.map((c,i)=>cardHTML(c,i,all||i===only)).join('');
+  loadShop();
+}
+
+function renderThermo(){
+  const t=state.temp, b=bandOf(t), band=BANDS[b];
+  $('deg').textContent=t+'°';
+  $('temp').value=t;
+  $('bandLabel').textContent=band.label;
+  $('season').textContent=band.season;
+  $('tip').innerHTML=band.tip+(state.gap?' <strong>일교차가 커요. 아침저녁용 겉옷을 하나 더 챙기세요.</strong>':'');
+  document.documentElement.style.setProperty('--temp',TEMP_HEX[b]);
+  $('count').textContent=`${band.label} · ${state.gender==='men'?'남자':'여자'} · ${curBody().label}`;
+  $('gap').checked=state.gap;
+  for(const btn of document.querySelectorAll('.seg button'))btn.setAttribute('aria-pressed',String(btn.dataset.g===state.gender));
+}
+function renderFit(){
+  const bodies=BODY[state.gender], cb=curBody(), ch=curHeight();
+  $('bodyChips').innerHTML=bodies.map(b=>`<button type="button" data-body="${b.id}" aria-pressed="${b.id===cb.id}">${b.label}</button>`).join('');
+  $('heightChips').innerHTML=HEIGHTS.map(h=>`<button type="button" data-height="${h.id}" aria-pressed="${h.id===ch.id}">${h.label}</button>`).join('');
+  $('fitSum').textContent=cb.sum+(ch.sum?' 키는 '+ch.sum:'');
+  $('fitMini').innerHTML=figureSVG(null,cb,ch.legLen);
+}
+
+function setTemp(t,force){
+  t=Math.max(-10,Math.min(35,Math.round(t)));
+  const before=bandOf(state.temp);
+  state.temp=t; store.set('temp',t);
+  renderThermo();
+  if(force||bandOf(t)!==before)generateAll();
+}
+
+// ---------- compare sheet ----------
+let lastTrigger=null;
+function openCompare(i,trigger){
+  const c=state.combos[i]; if(!c)return;
+  lastTrigger=trigger;
+  $('ovTitle').textContent=`${c.style} · ${c.pal}`;
+  $('ovItems').textContent=c.pieces.map(p=>`${p.color} ${p.name}`).join(' · ');
+  const me=curBody().id, h=curHeight();
+  $('cmp').innerHTML=BODY[state.gender].map(b=>{
+    const ev=evaluate(c,rulesFor(b));
+    const notes=notesHTML(ev,3)||'<div class="note"><i></i><span>특별히 신경 쓸 부분 없이 잘 맞아요.</span></div>';
+    return `<div class="cmpc${b.id===me?' me':''}"><div class="fig">${figureSVG(c,b,h.legLen)}</div><div class="in">
+      <div class="nm2"><span>${b.label}${b.id===me?' <span class="you">선택함</span>':''}</span><span class="verdict ${ev.cls}">${ev.label}</span></div>${notes}</div></div>`;
+  }).join('');
+  $('ov').hidden=false;
+  $('ovClose').focus();
+}
+function closeCompare(){$('ov').hidden=true; if(lastTrigger&&document.body.contains(lastTrigger))lastTrigger.focus();}
+$('ov').addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeCompare();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ov').hidden)closeCompare();});
+
+// ticks
+$('ticks').innerHTML=[5,9,12,17,20,23,28].map(v=>`<span style="left:${(v+10)/45*100}%">${v}°</span>`).join('');
+
+// ---------- events ----------
+$('temp').addEventListener('input',e=>setTemp(+e.target.value));
+$('up').addEventListener('click',()=>setTemp(state.temp+1));
+$('down').addEventListener('click',()=>setTemp(state.temp-1));
+$('gap').addEventListener('change',e=>{state.gap=e.target.checked;store.set('gap',state.gap);renderThermo();generateAll();});
+for(const btn of document.querySelectorAll('.seg button'))btn.addEventListener('click',()=>{
+  if(state.gender===btn.dataset.g)return;
+  state.gender=btn.dataset.g;store.set('gender',state.gender);state.seen.clear();
+  renderThermo();renderFit();generateAll();
+});
+$('bodyChips').addEventListener('click',e=>{const b=e.target.closest('[data-body]');if(!b)return;
+  state.body[state.gender]=b.dataset.body;store.set('body.'+state.gender,b.dataset.body);
+  renderFit();renderThermo();generateAll();});
+$('heightChips').addEventListener('click',e=>{const b=e.target.closest('[data-height]');if(!b)return;
+  state.height=b.dataset.height;store.set('height',state.height);renderFit();generateAll();});
+for(const id of ['refresh','refresh2'])$(id).addEventListener('click',e=>{
+  const b=e.currentTarget;b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');
+  generateAll();
+  if(id==='refresh2')$('listTitle').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+});
+$('cards').addEventListener('click',e=>{
+  const s=e.target.closest('[data-swap]'); if(s){swapOne(+s.dataset.swap);return;}
+  const c=e.target.closest('[data-cmp]'); if(c)openCompare(+c.dataset.cmp,c);
+});
+
+// ---------- forecast (Open-Meteo): works on a normal website; stays hidden when the request is blocked ----------
+const CITIES={서울:[37.57,126.98],부산:[35.18,129.08],대구:[35.87,128.6],인천:[37.46,126.71],광주:[35.16,126.85],대전:[36.35,127.38],울산:[35.54,129.31],제주:[33.5,126.53],강릉:[37.75,128.88]};
+$('city').innerHTML=Object.keys(CITIES).map(c=>`<option>${c}</option>`).join('');
+$('city').value=store.get('city','서울');
+async function loadForecast(city){
+  const [la,lo]=CITIES[city], ctrl=new AbortController(), tm=setTimeout(()=>ctrl.abort(),5000);
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=2`,{signal:ctrl.signal});
+    if(!r.ok)return null;
+    const j=await r.json();
+    return {max:j.daily.temperature_2m_max[1],min:j.daily.temperature_2m_min[1]};
+  }catch(e){return null;}finally{clearTimeout(tm);}
+}
+async function applyForecast(){
+  const city=$('city').value, f=await loadForecast(city);
+  if(!f)return;
+  $('fc').hidden=false;
+  $('fcText').textContent=`내일 최고 ${Math.round(f.max)}° · 최저 ${Math.round(f.min)}° 적용됨`;
+  state.gap=(f.max-f.min)>=10; store.set('gap',state.gap);
+  setTemp(f.max*.6+f.min*.4,true);
+}
+$('city').addEventListener('change',()=>{store.set('city',$('city').value);applyForecast();});
+
+renderThermo();
+renderFit();
+generateAll();
+applyForecast();
+</script>
+
+</body>
+</html>
