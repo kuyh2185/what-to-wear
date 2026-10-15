@@ -17,7 +17,7 @@
    one accent that follows the temperature band. Dials: variance 7, motion 4, density 3.
    Shape rule: photos and panels are square-cornered, interactive controls are full pills. */
 :root{
-  --bg:#f3f3f2; --surface:#fbfbfa; --ink:#121315; --muted:#696c72; --line:#d9dadc; --frame:#e4e4e2;
+  --bg:#f3f3f2; --surface:#fbfbfa; --ink:#121315; --muted:#696c72; --line:#d9dadc; --frame:#e2e2e0;
   --skin:#e2cbb6; --fig-line:rgba(18,19,21,.2); --temp:#25917f;
   --good:#23794a; --warn:#a4560d; --scrim:rgba(12,13,15,.55);
   --f-sans:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -105,7 +105,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .look:nth-child(1),.look:nth-child(2){grid-column:span 3}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .frame{position:relative;aspect-ratio:4/5;background:var(--frame);overflow:hidden}
-.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transition:transform 1.1s var(--ease)}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;transition:transform 1.1s var(--ease)}
 .look:hover .frame img{transform:scale(1.025)}
 .frame.pending{display:grid;place-items:center}
 .frame.pending svg{height:78%;width:auto}
@@ -269,7 +269,7 @@ footer p{margin:0 0 6px;max-width:80ch}
 
 <footer>
   <div class="wrap">
-    <p>코디 사진은 체형마다 AI(Cloudflare Workers AI)로 미리 만들어 둔 이미지예요. 실제 사람이 아니라서 핏과 디테일은 실제 제품과 다를 수 있어요.</p>
+    <p>코디 사진은 체형마다 검정 마네킹에 입혀 AI(Cloudflare Workers AI)로 미리 만들어 둔 이미지예요. 핏과 디테일은 실제 제품과 다를 수 있어요.</p>
     <p>기온 구간은 기온별 옷차림 기준을, 체형 평가는 일반적인 스타일링 원칙을 따라요. 아이템 사진은 다음 이미지 검색 결과이고, 제품 이름은 무신사 검색으로 연결돼요.</p>
   </div>
 </footer>
@@ -281,7 +281,7 @@ footer p{margin:0 0 6px;max-width:80ch}
       <div>
         <h3 id="ovTitle"></h3>
         <p id="ovItems"></p>
-        <p>같은 옷을 체형마다 입혀본 AI 이미지예요. 키는 보통 기준이에요.</p>
+        <p>같은 옷을 체형별 마네킹에 입혀본 AI 이미지예요. 키는 보통 기준이에요.</p>
       </div>
       <button type="button" class="x" id="ovClose" data-close aria-label="닫기"><i class="ph ph-x"></i></button>
     </div>
@@ -431,7 +431,7 @@ const imgUrl=(c,bodyId)=>c.id&&c.bodies&&c.bodies.includes(bodyId)?`${API_BASE}/
 function heroHTML(c,body,attrs){
   const url=imgUrl(c,body.id);
   if(!url||BAD.has(url))return `<div class="frame pending">${figureSVG(c,body,curHeight().legLen)}</div><p class="cap">이 코디의 ${body.label} 체형 이미지는 준비 중이에요</p>`;
-  return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" alt="${esc(body.label)} 체형이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><p class="cap">AI 생성 이미지, ${body.label} 체형</p>`;
+  return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" alt="${esc(body.label)} 체형 검정 마네킹이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><p class="cap">AI 생성 이미지, ${body.label} 체형 마네킹</p>`;
 }
 function updateHero(i){
   const c=state.combos[i], slot=document.querySelector(`[data-slot="${i}"]`);

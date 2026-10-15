@@ -78,11 +78,7 @@ const BODY_EN = {
     plus: 'a plus-size, heavy-set curvy body with full arms, a soft belly, wide hips and thick thighs',
   },
 };
-const HEIGHT_EN = { s: ', short and petite', m: '', t: ', tall' };
-const PLACES = [
-  'on a Seoul city sidewalk', 'on a quiet street lined with cafes', 'in front of a plain concrete wall',
-  'on a park path', 'at a crosswalk in downtown Seoul', 'in front of a brick building',
-];
+const HEIGHT_EN = { s: ', short', m: '', t: ', tall' };
 const MODEL = '@cf/black-forest-labs/flux-1-schnell';
 const STEPS = 4;
 
@@ -99,11 +95,14 @@ export function buildPrompt(g, bodyId, h, items, seed) {
     parts.push(`${color} ${name}`);
   }
   if (!parts.length) return null;
-  const person = g === 'men' ? 'man' : 'woman';
-  return `Full-body street style fashion photograph. Body type: ${body}${HEIGHT_EN[h]}. ` +
-    `A Korean ${person} in their twenties with ${body} is standing ${PLACES[seed % PLACES.length]}, wearing ${parts.join(', ')}. ` +
-    'The whole body is visible from head to shoes, centered in frame, facing the camera. ' +
-    'Natural daylight, realistic photo, 35mm lens, sharp focus.';
+  const form = g === 'men' ? 'male' : 'female';
+  // Faceless black mannequin in a plain studio so the clothes and body shape are the focus.
+  return `Full-body fashion catalog photo of a matte black faceless ${form} mannequin. ` +
+    `Mannequin body shape: ${body}${HEIGHT_EN[h]}. ` +
+    `The mannequin is wearing ${parts.join(', ')}. ` +
+    'The mannequin has a smooth, featureless black head with no face and no hair, and black hands. ' +
+    'Standing straight, front view, the entire figure visible from head to shoes, centered with space around it. ' +
+    'Plain light gray seamless studio backdrop, soft even studio lighting, realistic fabric texture and fit, sharp focus.';
 }
 
 // returns the generated JPEG as a base64 string
