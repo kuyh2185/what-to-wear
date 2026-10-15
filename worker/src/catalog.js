@@ -86,7 +86,7 @@ export async function generateOne(env) {
     await Promise.all(ok.map(b => env.LOOKS.delete(`img:${id}:${b}`)));
     // Give back the unused budget so a failed run (e.g. AI quota reached) doesn't eat the day's allowance.
     // When the free daily allocation is used up (4006), stop until it resets at 00:00 UTC.
-    const spent = /4006/.test(lastError) ? DAILY_IMAGE_BUDGET : used + ok.length;
+    const spent = /b4006b/.test(lastError) ? DAILY_IMAGE_BUDGET : used + ok.length;
     await env.LOOKS.put(bKey, String(spent), { expirationTtl: 3 * 86400 });
     return { failed: id, g, band, rendered: ok.length, error: lastError };
   }
