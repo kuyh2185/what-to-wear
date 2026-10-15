@@ -4,7 +4,7 @@
 // (the old Workers AI catalog) are removed together with their images.
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 import { BANDS } from '../outfits.js';
 
@@ -49,7 +49,7 @@ if (!apply) { rmSync(tmp, { recursive: true }); process.exit(0); }
 
 execFileSync('python', ['-I', resolve(import.meta.dirname, 'to-jpeg.py'), ...pairs.flat()], { stdio: ['ignore', 'ignore', 'inherit'] });
 for (const [png, jpg] of pairs) {
-  const name = png.split(/[\/]/).pop().replace('.png', '');
+  const name = basename(png, '.png');
   const [id, body] = [name.slice(0, name.lastIndexOf('_')), name.slice(name.lastIndexOf('_') + 1)];
   put.push({ key: `img:${id}:${body}`, value: readFileSync(jpg).toString('base64'), base64: true });
 }
