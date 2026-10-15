@@ -245,7 +245,7 @@ footer p{margin:0 0 6px}
 
   <footer>
     <p>기온 구간은 흔히 쓰는 ‘기온별 옷차림’ 기준을, 체형 포인트는 일반적인 스타일링 원칙을 따라요. 선택한 체형에 잘 맞는 아이템이 더 자주 나와요.</p>
-    <p>상품 사진과 가격은 네이버 쇼핑 검색 결과에서 가져와요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 다시 확인하세요.</p>
+    <p>아이템 사진은 다음(카카오) 이미지 검색 결과이고, 누르면 사진이 실린 페이지로 이동해요. 제품 이름을 누르면 무신사 검색으로, Pinterest 링크는 그 제품의 실제 착용 사진으로 연결돼요. 색상·재고·가격은 매장에서 확인하세요.</p>
   </footer>
 </div>
 
@@ -752,13 +752,13 @@ function notesHTML(ev,max){
   return n.slice(0,max).map(([k,i,t])=>`<div class="note ${k}"><i>${i}</i><span>${t}</span></div>`).join('');
 }
 
-// ---------- shop photos (Naver Shopping via Cloudflare Worker) ----------
+// ---------- item photos (Daum image search via Cloudflare Worker) ----------
 const API_BASE='https://what-to-wear-shop.kuyh2185.workers.dev';
 const SHOP=new Map(), PENDING=new Set();
 const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const qOf=p=>p.product?prodName(p):`${state.gender==='men'?'남성':'여성'} ${p.color} ${p.name}`;
 const thumbHTML=it=>it?`<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" referrerpolicy="no-referrer"><span class="dot"></span>`:'';
-const buyHTML=it=>it?`<a href="${esc(it.link)}" target="_blank" rel="noopener" title="${esc(it.title)}">${it.price?it.price.toLocaleString('ko-KR')+'원':'가격 보기'}${it.mall?` <small>· ${esc(it.mall)}</small>`:''} ↗</a>`:'';
+const buyHTML=it=>it?`<a href="${esc(it.link)}" target="_blank" rel="noopener" title="${esc(it.title)}">사진 출처${it.site?` <small>· ${esc(it.site)}</small>`:''} ↗</a>`:'';
 function paintShop(q,it){
   for(const el of document.querySelectorAll(`[data-q="${CSS.escape(q)}"]`))
     el.innerHTML=el.classList.contains('th')?thumbHTML(it):buyHTML(it);
@@ -773,7 +773,7 @@ function loadShop(){
       .then(r=>r.ok?r.json():null)
       .then(j=>{if(j&&j.results)document.body.classList.add('shop-on');
         for(const res of (j&&j.results)||[]){
-        const it=(res.items||[]).find(x=>/^https:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
+        const it=(res.items||[]).find(x=>/^https?:\/\//.test(x.link)&&/^https:\/\//.test(x.image))||null;
         SHOP.set(res.q,it); paintShop(res.q,it);
       }})
       .catch(()=>{})

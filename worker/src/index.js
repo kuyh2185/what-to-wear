@@ -1,6 +1,6 @@
-// Naver Shopping search proxy for 내일 뭐 입지?
+// Daum (Kakao) image search proxy for 내일 뭐 입지?
 // GET /search?q=...&q=...  (up to 8 queries) -> { results: [{ q, items: [...] }] }
-// Secrets: NAVER_CLIENT_ID, NAVER_CLIENT_SECRET (wrangler secret)
+// Secret: KAKAO_REST_API_KEY (wrangler secret)
 
 const ALLOWED_ORIGINS = [
   'https://kuyh2185.github.io',
@@ -24,7 +24,7 @@ export default {
 
     const url = new URL(request.url);
     if (url.pathname !== '/search') return json({ error: 'not_found' }, 404, cors);
-    if (!env.NAVER_CLIENT_ID || !env.NAVER_CLIENT_SECRET) return json({ error: 'missing_api_key' }, 503, cors);
+    if (!env.KAKAO_REST_API_KEY) return json({ error: 'missing_api_key' }, 503, cors);
 
     const queries = [...new Set(url.searchParams.getAll('q').map(q => q.trim()).filter(Boolean))].slice(0, MAX_QUERIES);
     if (!queries.length || queries.some(q => q.length > MAX_QUERY_LEN)) return json({ error: 'bad_query' }, 400, cors);
@@ -40,12 +40,10 @@ async function search(q, env, ctx) {
   const hit = await cache.match(key);
   if (hit) return hit.json();
 
-  const api = 'https://openapi.naver.com/v1/search/shop.json?display=5&sort=sim&query=' + encodeURIComponent(q);
+  const api = 'https://dapi.kakao.com/v2/search/image?sort=accuracy&size=5&query=' + encodeURIComponent(q);
   let res;
   try {
-    res = await fetch(api, {
-      headers: { 'X-Naver-Client-Id': env.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': env.NAVER_CLIENT_SECRET },
-    });
+    res = await fetch(api, { headers: { Authorization: 'KakaoAK ' + env.KAKAO_REST_API_KEY } });
   } catch {
     return { q, items: [], error: 'upstream_unreachable' };
   }
@@ -54,23 +52,18 @@ async function search(q, env, ctx) {
   const data = await res.json();
   const out = {
     q,
-    items: (data.items || []).map(i => ({
-      title: stripTags(i.title),
-      image: i.image,
-      price: Number(i.lprice) || null,
-      mall: i.mallName || '',
-      brand: i.brand || '',
-      link: i.link,
+    items: (data.documents || []).map(d => ({
+      title: q,
+      image: d.thumbnail_url,
+      full: d.image_url,
+      site: d.display_sitename || '',
+      link: d.doc_url,
     })),
   };
   ctx.waitUntil(cache.put(key, new Response(JSON.stringify(out), {
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=' + CACHE_SECONDS },
   })));
   return out;
-}
-
-function stripTags(s) {
-  return String(s || '').replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 }
 
 function json(body, status, headers) {
