@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve, basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { COLORS } from '../outfits.js';
+import { fixInners } from './inner-rule.mjs';
 
 const dir = process.argv[2];
 const checkIdx = process.argv.indexOf('--check');
@@ -62,7 +63,7 @@ for (const file of files) {
     if (!pieces.some(p => p.cat === 'shoes')) problems.push(`${at}: no shoes`);
     if (!pieces.some(p => p.cat === 'bottom' || p.cat === 'dress')) problems.push(`${at}: no bottom or dress`);
     looks.push({
-      g, band, style, pal, sig: 'musinsa:' + snap.id, trend: true, bodies: ['avg'], pieces,
+      g, band, style, pal, sig: 'musinsa:' + snap.id, trend: true, bodies: ['avg'], pieces: fixInners(pieces).pieces,
       src: { name: '무신사 코디샵', url: `https://www.musinsa.com/snap/${snap.id}` },
     });
   }

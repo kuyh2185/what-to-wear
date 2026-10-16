@@ -21,6 +21,7 @@
 //   4. 소재 섞기(스웨이드·레더 + 니트·데님), 신발·가방으로 톤 연결
 import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fixInners } from './inner-rule.mjs';
 
 // [cat, name, color, shape, english for the image prompt]
 const L = (g, band, style, pal, note, pieces) => ({ g, band, style, pal, note, pieces });
@@ -428,7 +429,7 @@ if (existsSync(file) && !existsSync(join(dir, 'plan.before-trend.json'))) copyFi
 const old = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : [];
 const idOf = new Map(old.filter(l => l.trend).map(l => [l.sig, l.id])); // keep ids (and images) of looks already planned
 const plan = LOOKS.map(l => {
-  const pieces = l.pieces.map(([cat, name, color, shape, en]) => ({ cat, name, color, shape, en }));
+  const pieces = fixInners(l.pieces.map(([cat, name, color, shape, en]) => ({ cat, name, color, shape, en })), { curated: true }).pieces;
   const sig = l.style + ':' + pieces.map(p => p.color + p.name).join('/');
   const id = idOf.get(sig) || Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   return { id, g: l.g, band: l.band, style: l.style, pal: l.pal, note: l.note, sig, trend: true, bodies: ['avg'], pieces };
