@@ -1,6 +1,6 @@
 // Shared outfit data and combo logic for 내일 뭐 입지? (used by the page and the Cloudflare Worker)
 
-export const COLORS={블랙:'#1f2023',화이트:'#f6f6f3',그레이:'#9b9ea3',차콜:'#45484e',네이비:'#27324c',베이지:'#d6c4a3',카멜:'#b0814e',브라운:'#6a4831',카키:'#6e6b45',올리브:'#5d6a37',아이보리:'#efe8d6',크림:'#f0e3c4',스카이블루:'#a8c5e2',연청:'#93acc9',중청:'#5c7ba3',진청:'#2e3e5d',버건디:'#6d2232',레드:'#b23a39',라벤더:'#c7bde0',핑크:'#e8b8c1',민트:'#bde0d2',버터:'#efda8c'};
+export const COLORS={블랙:'#1f2023',화이트:'#f6f6f3',그레이:'#9b9ea3',차콜:'#45484e',네이비:'#27324c',베이지:'#d6c4a3',카멜:'#b0814e',브라운:'#6a4831',카키:'#6e6b45',올리브:'#5d6a37',아이보리:'#efe8d6',크림:'#f0e3c4',스카이블루:'#a8c5e2',연청:'#93acc9',중청:'#5c7ba3',진청:'#2e3e5d',버건디:'#6d2232',레드:'#b23a39',라벤더:'#c7bde0',핑크:'#e8b8c1',민트:'#bde0d2',버터:'#efda8c',퍼플:'#6b4f86'};
 export const NEUTRAL=['블랙','화이트','그레이','차콜','아이보리','베이지','네이비'];
 export const BANDS=[
   {min:-99,max:4,label:'4° 이하',season:'한겨울',tip:'패딩이나 두꺼운 코트에 목도리까지. 기모 안감이면 더 좋아요.'},

@@ -36,7 +36,7 @@ const idx = {};
 for (const l of ready) {
   const key = `idx:${l.g}:${l.band}`;
   (idx[key] ||= []).push({
-    id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies,
+    id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies, note: l.note,
     created: l.created || Date.now(), pieces: l.pieces,
   });
 }
