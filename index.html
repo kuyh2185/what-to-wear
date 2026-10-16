@@ -458,26 +458,16 @@ async function lookPool(){
   if(pool.length<8)for(const nb of [b-1,b+1])if(nb>=0&&nb<BANDS.length)pool=pool.concat(await fetchLooks(state.gender,nb));
   return pool;
 }
+// Completely random: every look for tomorrow's temperature is equally likely, and a look comes back
+// only after all the others have been shown. Neighbouring bands fill in only when this band is short.
 function pickLooks(pool,n,exclude){
-  const rules=curRules(), body=curBody().id, band=bandOf(state.temp);
-  // Looks styled for this body come first; average-body looks fill in. Looks styled for another body are skipped.
+  const body=curBody().id, band=bandOf(state.temp);
   pool=pool.filter(l=>imgBody(l,body));
+  const own=pool.filter(l=>l.band===band);
+  if(own.length>=n+exclude.size)pool=own;
   let cand=pool.filter(l=>!exclude.has(l.id)&&!state.seenLooks.has(l.id));
   if(cand.length<n){state.seenLooks.clear();cand=pool.filter(l=>!exclude.has(l.id));}
-  const w=new Map(cand.map(l=>[l,Math.max(.15,evaluate(l,rules).score)
-    *(state.gap&&l.pieces.some(p=>p.cat==='outer')?2.5:1)
-    *(l.band===band?1:.35)
-    *(l.bodies.includes(body)?(body==='avg'?1:4):.25)]));
-  const out=[];
-  while(out.length<n&&w.size){
-    let tot=0;for(const v of w.values())tot+=v;
-    let r=Math.random()*tot, pick=null;
-    for(const [l,v] of w){r-=v;if(r<=0){pick=l;break;}}
-    pick=pick||[...w.keys()].pop();
-    out.push(pick);w.delete(pick);
-    for(const [l,v] of w)if(l.style===pick.style)w.set(l,v*.3);
-  }
-  return out;
+  return shuffle(cand).slice(0,n);
 }
 // Most looks only have the average-body photo for now; use it for every body type.
 const imgBody=(c,bodyId)=>!c.id||!c.bodies?null:c.bodies.includes(bodyId)?bodyId:c.bodies.includes('avg')?'avg':null;
