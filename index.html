@@ -489,10 +489,12 @@ function pickLooks(pool,n,exclude){
   if(cand.length<n){state.seenLooks.clear();cand=pool.filter(l=>!exclude.has(l.id));}
   return shuffle(cand).slice(0,n);
 }
+// Look photos are served as immutable; a version from the look's description makes a redrawn look a new URL.
+const lookVer=c=>{let h=0;for(const ch of c.pieces.map(p=>p.en||p.name).join('|'))h=Math.imul(h,31)+ch.charCodeAt(0)|0;return (h>>>0).toString(36);};
 // Most looks only have the average-body photo for now; use it for every body type.
 const imgBody=(c,bodyId)=>!c.id||!c.bodies?null:c.bodies.includes(bodyId)?bodyId:c.bodies.includes('avg')?'avg':null;
 function heroHTML(c,body,attrs,eager){
-  const ib=imgBody(c,body.id), url=ib?`${API_BASE}/img/${c.id}/${ib}`:'';
+  const ib=imgBody(c,body.id), url=ib?`${API_BASE}/img/${c.id}/${ib}?v=${lookVer(c)}`:'';
   if(!url||BAD.has(url))return `<div class="frame pending">${figureSVG(c,body,curHeight().legLen)}</div><figcaption>${body.label} 체형 마네킹 사진은 준비 중이에요</figcaption>`;
   const label=BODY[state.gender].find(b=>b.id===ib)?.label||body.label;
   return `<div class="frame"><span class="wait">불러오는 중</span><img src="${esc(url)}" ${eager?'fetchpriority="high"':'loading="lazy"'} alt="${esc(label)} 체형 검정 마네킹이 ${esc(c.pieces.map(p=>p.color+' '+p.name).join(', '))}을 입은 AI 생성 이미지" data-snap="${esc(url)}" ${attrs}></div><figcaption>AI 생성 이미지, ${label} 체형 마네킹</figcaption>`;
