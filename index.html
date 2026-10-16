@@ -158,6 +158,7 @@ figcaption{margin-top:8px;font-size:12px;color:var(--muted)}
 .buy a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 .buy a:hover{color:var(--ink)}
 .buy .more{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px}
+.buy .price{display:block;margin-top:2px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 
 .sk .frame{animation:pulse 1.4s var(--ease) infinite alternate}
 .sk .bar{height:14px;border-radius:3px;background:var(--surface-2);margin-top:18px;width:55%}
@@ -307,7 +308,7 @@ figcaption{margin-top:8px;font-size:12px;color:var(--muted)}
         <li><span class="n">03</span><h3>시즌 키 아이템 한두 개</h3><p>스웨이드 재킷, 숏 패딩, 커브드 데님, 럭비 셔츠, 시어 톱처럼 지금 많이 입는 아이템을 넣어요.</p></li>
         <li><span class="n">04</span><h3>소재를 섞고 톤을 잇기</h3><p>스웨이드·레더에 니트·데님을 섞고, 신발과 가방으로 색을 이어 줘요.</p></li>
       </ol>
-      <p class="sources">근거: GQ·보그·하퍼스 바자·마리끌레르·엘르 코리아의 2026 시즌 트렌드 기사, 무신사 월간·주간 랭킹, 2026 가을 유튜브 코디 영상, SS26 런웨이·스트리트 리포트. 기온대마다 남녀 각 네 벌을 골랐어요.</p>
+      <p class="sources">근거: GQ·보그·하퍼스 바자·마리끌레르·엘르 코리아의 2026 시즌 트렌드 기사, 무신사 월간·주간 랭킹, 2026 가을 유튜브 코디 영상, SS26 런웨이·스트리트 리포트, 그리고 무신사 코디샵의 인기 코디(실제 판매 상품으로 짠 코디)를 그대로 옮긴 것이에요. 기온대마다 남녀 각 열네 벌 이상이 있어요.</p>
     </div>
   </section>
 </main>
@@ -437,7 +438,7 @@ function paintThumb(q,it){
 }
 function loadThumbs(card){
   const c=state.combos[card]; if(!c)return;
-  const qs=c.pieces.map(qOf);
+  const qs=c.pieces.filter(p=>!p.link).map(qOf);
   fetchQs(qs).then(()=>{for(const q of new Set(qs))paintThumb(q,pickThumb(q));});
 }
 
@@ -511,6 +512,7 @@ function cardHTML(c,i){
       <p class="pal">${esc(c.pal)}</p>
       <ul class="pieces">${pieces}</ul>
       ${c.note?`<p class="note"><b>요즘 잘 입는 조합</b>${esc(c.note)}.</p>`:''}
+      ${c.src?`<p class="note"><b>${esc(c.src.name)} 코디</b>인기 코디를 마네킹에 그대로 옮겼어요. 입은 상품은 제품 정보에서 볼 수 있어요.</p>`:''}
       ${fitLine(ev,body.label+' 체형')}
       <div class="acts">
         <button type="button" class="act" data-buy="${i}" aria-expanded="false" aria-controls="buy-${i}">${icon('bag')}<span>제품 정보</span></button>
@@ -520,10 +522,16 @@ function cardHTML(c,i){
     </div>
   </article>`;
 }
+const won=n=>n?Number(n).toLocaleString('ko-KR')+'원':'';
 function buyHTML(c){
-  const li=c.pieces.map(p=>{const q=qOf(p), it=pickThumb(q);
+  const li=c.pieces.map(p=>{
+    // pieces copied from a shop's coordination carry the real product
+    if(p.link){const [brand,name]=p.product.split('|');
+      return `<li><a class="th" style="--c:${COLORS[p.color]}" href="${esc(p.link)}" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer"></a><span><span class="cat">${CAT[p.cat]} · ${esc(brand)}</span><a href="${esc(p.link)}" target="_blank" rel="noopener">${esc(name)}</a><span class="price">${won(p.price)}</span></span></li>`;}
+    const q=qOf(p), it=pickThumb(q);
     return `<li><span class="th" style="--c:${COLORS[p.color]}" data-q="${esc(q)}">${thumbHTML(it)}</span><span><span class="cat">${CAT[p.cat]}</span>${p.color} ${p.name}${p.product?`<br><a href="${msUrl(prodName(p))}" target="_blank" rel="noopener">${prodName(p)}</a>`:''}<span data-src="${esc(q)}">${it?` <a href="${esc(it.link)}" target="_blank" rel="noopener">사진 출처</a>`:''}</span></span></li>`;}).join('');
-  return `<ul>${li}</ul><p class="more">${socialLinks(c)}</p>`;
+  const src=c.src?`<a href="${esc(c.src.url)}" target="_blank" rel="noopener">${esc(c.src.name)} 원본 코디</a>`:'';
+  return `<ul>${li}</ul><p class="more">${src}${socialLinks(c)}</p>`;
 }
 const skeleton=()=>Array.from({length:5},()=>`<div class="look sk in" aria-hidden="true"><div class="frame"></div><div class="meta"><div class="bar"></div><div class="bar"></div></div></div>`).join('');
 

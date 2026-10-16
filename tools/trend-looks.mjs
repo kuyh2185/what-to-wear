@@ -433,5 +433,6 @@ const plan = LOOKS.map(l => {
   const id = idOf.get(sig) || Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   return { id, g: l.g, band: l.band, style: l.style, pal: l.pal, note: l.note, sig, trend: true, bodies: ['avg'], pieces };
 });
-writeFileSync(file, JSON.stringify(plan, null, 1));
+// looks from other sources (tools/musinsa-looks.mjs) stay in the plan
+writeFileSync(file, JSON.stringify(plan.concat(old.filter(l => !l.trend || l.sig.startsWith('musinsa:'))), null, 1));
 console.log(`plan has ${plan.length} trend looks`);

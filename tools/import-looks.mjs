@@ -36,7 +36,7 @@ const idx = {};
 for (const l of ready) {
   const key = `idx:${l.g}:${l.band}`;
   (idx[key] ||= []).push({
-    id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies, note: l.note,
+    id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies, note: l.note, src: l.src,
     created: l.created || Date.now(), pieces: l.pieces,
   });
 }
@@ -47,7 +47,10 @@ console.log(`looks ${ready.length}, images ${images}, old images to delete ${del
 for (const [k, v] of Object.entries(idx)) if (v.length) console.log(`  ${k}: ${v.length}`);
 if (!apply) { rmSync(tmp, { recursive: true }); process.exit(0); }
 
-execFileSync('python', ['-I', resolve(import.meta.dirname, 'to-jpeg.py'), ...pairs.flat()], { stdio: ['ignore', 'ignore', 'inherit'] });
+// in batches: Windows caps a command line at 32K characters
+for (let i = 0; i < pairs.length; i += 40) {
+  execFileSync('python', ['-I', resolve(import.meta.dirname, 'to-jpeg.py'), ...pairs.slice(i, i + 40).flat()], { stdio: ['ignore', 'ignore', 'inherit'] });
+}
 for (const [png, jpg] of pairs) {
   const name = basename(png, '.png');
   const [id, body] = [name.slice(0, name.lastIndexOf('_')), name.slice(name.lastIndexOf('_') + 1)];
