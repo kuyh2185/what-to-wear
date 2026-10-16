@@ -4,3 +4,4 @@ node_modules/
 secrets.json
 .admin-token
 worker/.admin-token
+__pycache__/
