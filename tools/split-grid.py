@@ -39,7 +39,12 @@ def split(path, raw):
     rows = [sum(px[x, y] for x in range(sw)) / sw for y in range(sh)]
     gx, gy = gutter(cols, int(sw * .4), int(sw * .6)), gutter(rows, int(sh * .4), int(sh * .6))
     if not gx or not gy:
-        print('no 2x2 gutter:', os.path.basename(path)); return 0
+        # Gemini sometimes draws the panels edge to edge with no bright gap; a grid of the usual
+        # size is then cut at its exact middle
+        if (w, h) != (1792, 2400):
+            print('no 2x2 gutter:', os.path.basename(path)); return 0
+        print('no gutter, cut at the middle:', os.path.basename(path))
+        gx, gy = (w // 8, w // 8), (h // 8, h // 8)
     xs = [(0, gx[0] * 4), (gx[1] * 4, w)]
     ys = [(0, gy[0] * 4), (gy[1] * 4, h)]
     boxes = [(xs[0][0], ys[0][0], xs[0][1], ys[0][1]), (xs[1][0], ys[0][0], xs[1][1], ys[0][1]),
