@@ -53,6 +53,9 @@ export function fixInners(pieces, { curated = false, seen = false } = {}) {
     const tagged = q.product ? q.product.split('|')[1] : '';
     // a guess: no product at all, or a multi-color product ('_5컬러', '(3color)') whose name says no color
     const guessed = !tagged || MULTI.test(tagged) && !COLOR_WORDS.test(tagged);
+    // a shop product whose name states its color is evidence: it keeps that color (user request 2026-10-18,
+    // only an inner without evidence turns white). The hand-picked trend looks keep the older rules.
+    if (!curated && !guessed) return q;
     if (isTee && !PLAIN.has(q.color)) {
       q = { ...q, color: '화이트', en: 'plain white ' + stripColor(q.en) };
       changed.push('tee');
