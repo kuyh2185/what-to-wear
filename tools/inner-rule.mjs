@@ -35,6 +35,16 @@ function whitenLayers(en) {
   });
 }
 
+// The white tee that stands in for an unseen or guessed inner is a plain regular fit that covers the whole
+// torso (user request 2026-10-18: not cropped, neat). Gemini otherwise drew it cropped with the midriff showing.
+export const WHITE_TEE = {
+  short: 'plain white regular-fit crew-neck t-shirt underneath, hip length, covering the whole torso',
+  long: 'plain white regular-fit long-sleeve t-shirt underneath, hip length, covering the whole torso',
+};
+const FILL = /^plain white (crew-neck t-shirt|long-sleeve t-shirt) underneath/;
+// a basic white tee named only inside a layering clause ("hood zip-up over a white cropped tee")
+const CLAUSE_TEE = /\b(over|under|underneath|layered over|layered under|with) an? (?:plain )?white (?:cropped |crop |slim |fitted |baby |muscle )*(?:crew-?neck |ribbed |rib )?(?:t-shirt|tee)\b/i;
+
 // curated: hand-picked trend looks, whose colors are deliberate (the guessed-color rule does not apply)
 // seen: every piece was copied from the outfit photo with the color it shows there (user request 2026-10-18:
 //   only an inner with no evidence becomes a white tee), so nothing is recolored; only a missing top is added
@@ -57,7 +67,7 @@ export function fixInners(pieces, { curated = false, seen = false } = {}) {
     // only an inner without evidence turns white). The hand-picked trend looks keep the older rules.
     if (!curated && !guessed) return q;
     if (isTee && !PLAIN.has(q.color)) {
-      q = { ...q, color: '화이트', en: 'plain white ' + stripColor(q.en) };
+      q = { ...q, color: '화이트', en: WHITE_TEE[q.shape === 'long' || /long-sleeve|long sleeve/i.test(main) ? 'long' : 'short'] };
       changed.push('tee');
     } else if (!isTee && LOUD.has(q.color) && pieces.some(o => o !== p && ['outer', 'bottom', 'dress', 'top'].includes(o.cat) && LOUD.has(o.color) && o.color !== q.color)) {
       // a second, different point color under the outer: the inner gives way (a same-color set is fine)
@@ -73,8 +83,20 @@ export function fixInners(pieces, { curated = false, seen = false } = {}) {
   });
   if (has('outer') && !has('top') && !has('dress')) {
     const at = out.findIndex(p => p.cat === 'outer') + 1;
-    out = [...out.slice(0, at), { cat: 'top', name: '반팔 티', color: '화이트', shape: 'short', en: 'plain white crew-neck t-shirt underneath' }, ...out.slice(at)];
+    out = [...out.slice(0, at), { cat: 'top', name: '반팔 티', color: '화이트', shape: 'short', en: WHITE_TEE.short }, ...out.slice(at)];
     changed.push('added');
   }
+  out = out.map(p => {
+    if (p.cat !== 'top' && p.cat !== 'outer') return p;
+    // the stand-in tee written by hand in the look files
+    const m = p.cat === 'top' && p.en.match(FILL);
+    if (m) return { ...p, en: WHITE_TEE[m[1].startsWith('long') ? 'long' : 'short'] + p.en.slice(m[0].length) };
+    // a white tee added in words only, with no product behind it (photo-checked looks keep what the photo shows)
+    if (!seen && CLAUSE_TEE.test(p.en)) {
+      changed.push('clause');
+      return { ...p, en: p.en.replace(CLAUSE_TEE, (s, prep) => `${prep} a plain white regular-fit t-shirt covering the whole torso`) };
+    }
+    return p;
+  });
   return { pieces: out, changed };
 }
