@@ -435,5 +435,5 @@ const plan = LOOKS.map(l => {
   return { id, g: l.g, band: l.band, style: l.style, pal: l.pal, note: l.note, sig, trend: true, bodies: ['avg'], pieces };
 });
 // looks from other sources (tools/musinsa-looks.mjs) stay in the plan
-writeFileSync(file, JSON.stringify(plan.concat(old.filter(l => !l.trend || l.sig.startsWith('musinsa:'))), null, 1));
+writeFileSync(file, JSON.stringify(plan.concat(old.filter(l => !l.trend || /^(musinsa|web):/.test(l.sig))), null, 1));
 console.log(`plan has ${plan.length} trend looks`);
