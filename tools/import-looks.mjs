@@ -6,7 +6,7 @@
 // each key): the free KV plan allows 1,000 writes a day, and the whole catalog is about as many.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync, statSync } from 'node:fs';
 import { join, resolve, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 import { BANDS } from '../outfits.js';
@@ -45,7 +45,7 @@ for (const l of ready) {
   const key = `idx:${l.g}:${l.band}`;
   (idx[key] ||= []).push({
     id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies, note: l.note, src: l.src,
-    created: l.created || Date.now(), pieces: l.pieces,
+    created: l.created || Math.round(statSync(join(dir, 'raw', `${l.id}_${l.bodies[0]}.png`)).mtimeMs), pieces: l.pieces,
   });
 }
 for (const g of ['men', 'women']) for (let b = 0; b < BANDS.length; b++) idx[`idx:${g}:${b}`] ||= [];
