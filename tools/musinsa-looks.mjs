@@ -26,6 +26,9 @@ const norm = s => s.toLowerCase().replace(/\s+/g, ' ');
 const SHAPES = { outer: ['short', 'mid', 'long'], top: ['short', 'long', 'none'], bottom: ['pants', 'wide', 'shorts', 'skirt', 'longskirt'],
   shoes: ['low', 'boots', 'sandal'], acc: [''], dress: ['short-long', 'long-long', 'none-long', 'none-short', 'short-short', 'long-short'] };
 
+// Snaps whose pieces were checked against the snap photo (the third batch, and these first-batch snaps
+// re-checked on 2026-10-18): their colors are the photo's, so the inner rule only adds a missing top.
+const PHOTO_CHECKED = new Set(['1491663101765996138', '1556284433575686903', '1559928995170270466', '1555508871705901247', '1494318125603110617', '1531212955544032761', '1560286842770403600', '1556630356889679268', '1501454613768981106', '1505881157400361207', '1501454618567262744', '1501454617204116359', '1501454610728108961', '1501454611491474572', '1554075078695322686', '1554075077848072527', '1471726110274596828', '1465269760526428796', '1557326090718422884', '1468834658796973583', '1551785084074702496', '1557649377205955852', '1557636203762567738', '1550111867222299331', '1559820980161131019', '1559820979838169762', '1559918136505401383', '1557649378879479871', '1559918138191515511', '1559928994536930563', '1559931592736291782', '1560205086994182588', '1557649378443272902', '1535157358077973965', '1468497352680546576', '1554388157205047292', '1465203240605619027', '1556630356151483810', '1557606915826929320', '1557606914455389714', '1559438311007301147']);
 const toolDir = import.meta.dirname;
 const files = checkFile ? [checkFile]
   : readdirSync(toolDir).filter(f => /^musinsa-looks-(men|women).*\.mjs$/.test(f)).sort().map(f => join(toolDir, f));
@@ -63,7 +66,7 @@ for (const file of files) {
     if (!pieces.some(p => p.cat === 'shoes')) problems.push(`${at}: no shoes`);
     if (!pieces.some(p => p.cat === 'bottom' || p.cat === 'dress')) problems.push(`${at}: no bottom or dress`);
     looks.push({
-      g, band, style, pal, sig: 'musinsa:' + snap.id, trend: true, bodies: ['avg'], pieces: fixInners(pieces).pieces,
+      g, band, style, pal, sig: 'musinsa:' + snap.id, trend: true, bodies: ['avg'], pieces: fixInners(pieces, { seen: file.endsWith('-3.mjs') || PHOTO_CHECKED.has(snap.id) }).pieces,
       src: { name: '무신사 코디샵', url: `https://www.musinsa.com/snap/${snap.id}` },
     });
   }

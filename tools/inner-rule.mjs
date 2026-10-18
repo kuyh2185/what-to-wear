@@ -36,10 +36,12 @@ function whitenLayers(en) {
 }
 
 // curated: hand-picked trend looks, whose colors are deliberate (the guessed-color rule does not apply)
-export function fixInners(pieces, { curated = false } = {}) {
+// seen: every piece was copied from the outfit photo with the color it shows there (user request 2026-10-18:
+//   only an inner with no evidence becomes a white tee), so nothing is recolored; only a missing top is added
+export function fixInners(pieces, { curated = false, seen = false } = {}) {
   const has = c => pieces.some(p => p.cat === c);
   const changed = [];
-  let out = pieces.map(p => {
+  let out = seen ? pieces : pieces.map(p => {
     if (p.cat !== 'top' && p.cat !== 'outer') return p;
     let q = p;
     const layered = whitenLayers(q.en);

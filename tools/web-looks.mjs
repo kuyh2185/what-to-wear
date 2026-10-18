@@ -49,7 +49,7 @@ for (const file of files) {
     if (!pieces.some(p => p.cat === 'shoes')) problems.push(`${at}: no shoes`);
     if (!pieces.some(p => p.cat === 'bottom' || p.cat === 'dress')) problems.push(`${at}: no bottom or dress`);
     looks.push({ g: l.g, band: l.band, style: l.style, pal: l.pal, sig: 'web:' + l.src?.url, trend: true, bodies: ['avg'],
-      pieces: fixInners(pieces, { curated: true }).pieces, src: { name: l.src?.name, url: l.src?.url } });
+      pieces: fixInners(pieces, { seen: true }).pieces, src: { name: l.src?.name, url: l.src?.url } });
   });
 }
 const count = {};
