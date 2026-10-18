@@ -78,20 +78,41 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .panel .row+.row{border-top:1px solid var(--line)}
 .ctl-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 12px;font-size:13px;font-weight:600;color:var(--muted)}
 .ctl-label b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
-.ruler{position:relative;height:44px}
-.ruler input{-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;background:transparent;cursor:ew-resize;z-index:1}
-.ruler input::-webkit-slider-runnable-track{height:44px;background:transparent}
-.ruler input::-moz-range-track{height:44px;background:transparent}
-.ruler input::-webkit-slider-thumb{-webkit-appearance:none;width:4px;height:44px;background:var(--accent);border:0;border-radius:2px}
-.ruler input::-moz-range-thumb{width:4px;height:44px;background:var(--accent);border:0;border-radius:2px}
-.ruler .ticks{position:absolute;left:1px;right:1px;top:10px;height:22px;pointer-events:none;
-  background:
-    repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px calc(100%/9)) top/100% 22px no-repeat,
-    repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px calc(100%/45)) center/100% 12px no-repeat}
-.ruler-nums{position:relative;height:16px;margin-top:4px;font-family:var(--display);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.ruler-nums span{position:absolute;transform:translateX(-50%)}
-.ruler-nums span:first-child{transform:none}
-.ruler-nums span:last-child{transform:translateX(-100%)}
+/* temperature strip: the 8 bands of the familiar "what to wear by temperature" chart side by side,
+   each colored and labeled with what you wear, tomorrow's low-high range bracketed above (weather-app style),
+   and a marker at the exact degree. Bands get equal width, so the narrow ones (9~11°) stay tappable. */
+.thermo{margin-top:36px}
+.th-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.th-head .ctl-label{margin:0}
+.stepper{display:inline-flex;gap:6px}
+.stepper button{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--surface);display:grid;place-items:center;transition:border-color .2s var(--ease)}
+.stepper button:hover{border-color:var(--ink)}
+.stepper button:disabled{opacity:.35;cursor:default;border-color:var(--line)}
+.th-track{position:relative;padding:40px 0 34px;cursor:pointer;touch-action:pan-y;-webkit-user-select:none;user-select:none;border-radius:var(--r)}
+.th-track:focus-visible{outline-offset:4px}
+.th-bands{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px}
+.th-bands li{--c:var(--muted);position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;min-height:76px;padding:10px 8px 12px;
+  background:color-mix(in srgb,var(--c) 13%,var(--surface));color:var(--ink-2);overflow:hidden;
+  transition:background .3s var(--ease),color .3s var(--ease)}
+.th-bands li::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c)}
+.th-bands li:first-child{border-radius:var(--r) 0 0 var(--r)}
+.th-bands li:last-child{border-radius:0 var(--r) var(--r) 0}
+.th-bands b{font-size:14px;font-weight:700;line-height:1.2;letter-spacing:-.02em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th-bands small{font-family:var(--display);font-size:12px;font-weight:500;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+.th-bands small i{font-style:normal}
+.th-bands li.on{background:color-mix(in srgb,var(--c) 84%,#000);color:#fff}
+.th-bands li.on b{color:#fff}
+/* tomorrow's low-high, bracketed under the strip */
+.th-range{position:absolute;bottom:18px;height:9px;border:1.5px solid var(--ink-2);border-top:0;border-radius:0 0 4px 4px;pointer-events:none;transition:left .4s var(--ease),width .4s var(--ease)}
+.th-range span{position:absolute;top:100%;left:50%;transform:translate(-50%,1px);font-size:11.5px;font-weight:600;line-height:16px;color:var(--ink-2);white-space:nowrap;background:var(--bg);padding:0 6px}
+/* the marker stops at the strip's top edge so it never covers a label */
+.th-thumb{position:absolute;top:0;height:46px;width:0;pointer-events:none;transition:left .25s var(--ease)}
+.th-thumb::before{content:"";position:absolute;top:28px;bottom:0;left:-1px;width:2px;background:var(--ink)}
+.th-thumb::after{content:"";position:absolute;bottom:-3px;left:-5px;width:10px;height:10px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2.5px var(--bg)}
+.th-bubble{position:absolute;top:0;transform:translateX(-50%);min-width:46px;padding:3px 10px;border-radius:999px;background:var(--ink);color:var(--bg);
+  font-family:var(--display);font-size:14px;font-weight:600;line-height:22px;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.th-track.dragging .th-thumb,.th-track.dragging .th-range{transition:none}
+.th-note{margin:12px 0 0;font-size:13.5px;color:var(--muted)}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;font-size:15px;font-weight:500;cursor:pointer}
 .switch input{-webkit-appearance:none;appearance:none;flex:none;position:relative;width:46px;height:28px;margin:0;border-radius:999px;background:var(--line);cursor:pointer;transition:background .2s var(--ease)}
 .switch input::before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s var(--ease)}
@@ -234,6 +255,12 @@ figcaption{margin-top:8px;font-size:12px;color:var(--muted)}
   .rules{grid-template-columns:minmax(0,1fr)}
   .criteria{padding-block:48px}
   .lineup{--cols:2!important;gap:36px 12px}
+  .thermo{margin-top:28px}
+  .th-bands{gap:2px}
+  .th-bands li{min-height:64px;padding:8px 2px 10px;align-items:center;text-align:center}
+  .th-bands b{font-size:12.5px;letter-spacing:-.05em;overflow:visible}
+  .th-bands small{font-size:10.5px;letter-spacing:-.04em}
+  .th-bands small i{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -254,6 +281,8 @@ figcaption{margin-top:8px;font-size:12px;color:var(--muted)}
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
 </svg>
 
 <header class="top">
@@ -274,13 +303,23 @@ figcaption{margin-top:8px;font-size:12px;color:var(--muted)}
       <h1 class="headline" id="headline">자켓 하나 걸치는 날</h1>
       <p class="fc" id="fc" hidden><select id="city" aria-label="도시"></select><span class="hl" id="fcText"></span></p>
       <p class="lede" id="tip"></p>
+      <div class="thermo">
+        <div class="th-head">
+          <p class="ctl-label"><span id="tempLabel">기온 맞추기</span><b id="bandLabel">12~16°</b></p>
+          <div class="stepper">
+            <button type="button" id="tDown" aria-label="1도 내리기"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+            <button type="button" id="tUp" aria-label="1도 올리기"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+        <div class="th-track" id="temp" role="slider" tabindex="0" aria-labelledby="tempLabel" aria-valuemin="-10" aria-valuemax="35" aria-valuenow="15">
+          <div class="th-range" id="tRange" hidden><span id="tRangeText"></span></div>
+          <ol class="th-bands" id="tBands" aria-hidden="true"></ol>
+          <div class="th-thumb" id="tThumb" aria-hidden="true"><span class="th-bubble" id="tBubble">15°</span></div>
+        </div>
+        <p class="th-note">칸을 누르거나 옆으로 끌어서 기온을 바꿔 보세요.</p>
+      </div>
     </div>
     <div class="panel">
-      <div class="row">
-        <p class="ctl-label"><label for="temp">기온 맞추기</label><b id="bandLabel">12~16°</b></p>
-        <div class="ruler"><div class="ticks" aria-hidden="true"></div><input type="range" id="temp" min="-10" max="35" step="1" value="15"></div>
-        <div class="ruler-nums" id="nums" aria-hidden="true"></div>
-      </div>
       <div class="row">
         <label class="switch"><span>일교차가 10° 넘게 커요<small>겉옷이 있는 코디를 더 자주 보여드려요</small></span><input type="checkbox" role="switch" id="gap"></label>
       </div>
@@ -625,8 +664,9 @@ function renderThermo(){
   const t=state.temp, b=bandOf(t), band=BANDS[b];
   $('deg').textContent=t+'°';
   document.documentElement.style.setProperty('--accent',TEMP_HEX[b]);
-  $('temp').value=t;
-  $('temp').setAttribute('aria-valuetext',`${t}도, ${band.label}`);
+  $('temp').setAttribute('aria-valuenow',t);
+  $('temp').setAttribute('aria-valuetext',`${t}도, ${band.label} ${band.season}, ${WEAR[b]}`);
+  renderStrip();
   $('bandLabel').textContent=`${band.label} ${band.season}`;
   $('headline').textContent=HEADLINES[b];
   $('headline').setAttribute('aria-label',`내일 ${t}도, ${HEADLINES[b]}`);
@@ -678,10 +718,51 @@ function closeCompare(){
 $('ovClose').addEventListener('click',closeCompare);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ov').hidden)closeCompare();});
 
-$('nums').innerHTML=[-10,0,10,20,30,35].map(v=>`<span style="left:${(v+10)/45*100}%">${v}°</span>`).join('');
+// ---------- temperature strip ----------
+// Every band gets the same width; inside a band the degrees are spread evenly, each one centered in its slot.
+const TMIN=-10, TMAX=35;
+const WEAR=['패딩','코트','트렌치','자켓','니트','긴팔','반팔','민소매'];
+// the degree sign of a range is dropped on phones to fit (<i>)
+const SPAN=['4°↓','5~8<i>°</i>','9~11<i>°</i>','12~16<i>°</i>','17~19<i>°</i>','20~22<i>°</i>','23~27<i>°</i>','28°↑'];
+const bandSpan=b=>[Math.max(BANDS[b].min,TMIN),Math.min(BANDS[b].max,TMAX)];
+const posOf=t=>{const b=bandOf(t),[lo,hi]=bandSpan(b);return (b+(Math.min(Math.max(t,lo),hi)-lo+.5)/(hi-lo+1))/BANDS.length;};
+const tempAt=x=>{x=Math.min(Math.max(x,0),.9999)*BANDS.length;const b=Math.floor(x),[lo,hi]=bandSpan(b);return lo+Math.floor((x-b)*(hi-lo+1));};
+$('tBands').innerHTML=BANDS.map((bd,b)=>`<li style="--c:${TEMP_HEX[b]}"><b>${WEAR[b]}</b><small>${SPAN[b]}</small></li>`).join('');
+let forecast=null;
+function renderStrip(){
+  const t=state.temp, b=bandOf(t), w=$('temp').clientWidth;
+  [...$('tBands').children].forEach((li,i)=>li.classList.toggle('on',i===b));
+  const x=posOf(t)*w;
+  $('tThumb').style.left=x+'px';
+  $('tBubble').textContent=t+'°';
+  // keep the bubble inside the strip at both ends
+  const half=($('tBubble').offsetWidth||44)/2;
+  $('tBubble').style.left=(Math.min(Math.max(x,half),w-half)-x)+'px';
+  $('tDown').disabled=t<=TMIN; $('tUp').disabled=t>=TMAX;
+  if(forecast){
+    const a=posOf(Math.round(forecast.min))*w, z=posOf(Math.round(forecast.max))*w;
+    $('tRange').hidden=false;
+    $('tRange').style.left=Math.min(a,z)-6+'px'; $('tRange').style.width=Math.abs(z-a)+12+'px';
+    $('tRangeText').textContent=`내일 ${Math.round(forecast.min)}~${Math.round(forecast.max)}°`;
+  }
+}
+const track=$('temp');
+const fromPointer=e=>{const r=track.getBoundingClientRect();setTemp(tempAt((e.clientX-r.left)/r.width));};
+track.addEventListener('pointerdown',e=>{if(e.button)return;track.setPointerCapture(e.pointerId);track.classList.add('dragging');fromPointer(e);});
+track.addEventListener('pointermove',e=>{if(track.hasPointerCapture(e.pointerId))fromPointer(e);});
+for(const ev of ['pointerup','pointercancel'])track.addEventListener(ev,()=>track.classList.remove('dragging'));
+track.addEventListener('keydown',e=>{
+  const t=state.temp, b=bandOf(t);
+  const to={ArrowLeft:t-1,ArrowDown:t-1,ArrowRight:t+1,ArrowUp:t+1,Home:TMIN,End:TMAX,
+    PageDown:b>0?bandSpan(b-1)[1]:t, PageUp:b<BANDS.length-1?bandSpan(b+1)[0]:t}[e.key];
+  if(to===undefined)return;
+  e.preventDefault(); setTemp(to);
+});
+$('tDown').addEventListener('click',()=>setTemp(state.temp-1));
+$('tUp').addEventListener('click',()=>setTemp(state.temp+1));
+new ResizeObserver(()=>renderStrip()).observe(track);
 
 // ---------- events ----------
-$('temp').addEventListener('input',e=>setTemp(+e.target.value));
 $('gap').addEventListener('change',e=>{state.gap=e.target.checked;store.set('gap',state.gap);renderThermo();generateAll();});
 for(const btn of document.querySelectorAll('.sex .opt'))btn.addEventListener('click',()=>{
   if(state.gender===btn.dataset.g)return;
@@ -735,6 +816,7 @@ async function loadForecast(city){
 async function applyForecast(){
   const city=$('city').value, f=await loadForecast(city);
   if(!f)return;
+  forecast=f;
   $('fc').hidden=false;
   $('fcText').innerHTML=`<span>최고 <b>${Math.round(f.max)}°</b></span><span>최저 <b>${Math.round(f.min)}°</b></span>`;
   state.gap=(f.max-f.min)>=10; store.set('gap',state.gap);
