@@ -347,7 +347,7 @@ export default [
     'shoes|젤-NYC|브라운|러닝 스니커즈|low|mahogany brown and black running sneakers']],
   ['1465203240605619027', 3, '케이블 집업 가디건 & 퍼 미니', '아이보리 & 그레이', [
     'outer|케이블 니트 풀집업 가디건|아이보리|케이블 집업 가디건|short|ivory oversized high-neck cable knit zip-up cardigan',
-    'top|레이어드 터틀 넥 올인원|그레이|레이어드 터틀넥|long|gray and black layered slim turtleneck',
+    'top|레이어드 터틀 넥 올인원|그레이|레이어드 터틀넥|long|gray slim turtleneck under a purple v-neck knit vest',
     'bottom|러플 퍼 미니 스커트|아이보리|퍼 미니스커트|skirt|ivory ruffled faux fur mini skirt',
     'shoes|breten vibram loafer|블랙|로퍼|low|black lug-sole loafers with long black knit leg warmers']],
   ['1465203239825479601', 3, '퍼 후드 집업 & 골지 원피스', '화이트 & 블랙', [

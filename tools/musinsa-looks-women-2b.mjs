@@ -38,7 +38,7 @@ export default [
     'acc|스웨이드 슬라우치 숄더 백|브라운|스웨이드 숄더백||dark brown suede slouchy shoulder bag']],
   ['1494318125603110617', 4, '트위드 재킷 & 와이드 카고', '크림 & 블랙', [
     'outer|라운드 넥 트위드 재킷|크림|트위드 재킷|short|cream round-neck tweed jacket',
-    'top||화이트|레터링 티셔츠|long|white lettering tee under the jacket',
+    'top||아이보리|레터링 티셔츠|long|ivory script-lettering tee under the jacket',
     'bottom|와이드 카고 팬츠|블랙|와이드 카고|wide|black wide cargo pants with a leather western belt',
     'shoes|첼시 부츠|블랙|첼시 부츠|boots|black low-cut chelsea boots',
     'acc|슬라우치 숄더백|브라운|숄더백||brown slouchy big shoulder bag']],
@@ -265,7 +265,7 @@ export default [
     'bottom|Layered Volume Lace Skirt|화이트|레이스 미디스커트|longskirt|white layered volume lace midi skirt',
     'shoes|로미타 플랫폼 밴딩 메리제인|블루|플랫폼 메리제인|low|grayish blue platform mary jane shoes']],
   ['1531212955544032761', 6, '홀터 레이어드 티 & 롱스커트', '블랙 & 민트', [
-    'top|울 텐셀 홀터 레이어드 티셔츠 [블랙]|블랙|홀터 레이어드 티|short|black wool-tencel tee with a halter layer and a gold scarf tied at the neck',
+    'top|울 텐셀 홀터 레이어드 티셔츠 [블랙]|블랙|홀터 레이어드 티|short|black wool-tencel tee with a halter layer',
     'bottom|나일론 루치드 롱 스커트|블랙|루치드 롱스커트|longskirt|black nylon ruched long skirt',
     'shoes|스피드캣 발렛 스웨이드 - 블랙|블랙|발레 스니커즈|low|black and white suede ballet sneakers',
     'acc|Editor Bag (mint)|민트|숄더백||mint shoulder bag']],

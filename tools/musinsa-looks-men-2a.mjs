@@ -121,12 +121,12 @@ export default [
     'acc|에반 체크 스카프|블랙|체크 스카프||black madras check scarf']],
   ['1554075077848072527', 1, '랩 숏 코트 & 플라워 데님', '블랙 & 베이지', [
     'outer|WRAP SHORT COAT|블랙|숏 코트|short|black wool wrap short coat',
-    'top|코튼 니트_(헨리넥)|크림|헨리넥 니트|long|cream supima cotton henley knit',
+    'top|코튼 니트_(헨리넥)|그레이|헨리넥 니트|long|light gray supima cotton henley knit',
     'bottom|FLOWER PRINTED WIDE-LEG JEANS|베이지|와이드 데님|wide|beige flower-printed wide-leg jeans',
     'shoes|로웰 4홀 슈즈 - 블랙|블랙|더비 슈즈|low|black crazy-horse leather four-eyelet derby shoes']],
-  ['1471726110274596828', 1, '헤링본 하프 코트 & 옥스포드', '그레이 & 화이트', [
+  ['1471726110274596828', 1, '헤링본 하프 코트 & 옥스포드', '그레이 & 브라운', [
     'outer|헤링본 울 하프 코트|그레이|하프 코트|mid|gray herringbone wool half coat',
-    'top|케이블 크롭 헨리넥 니트|아이보리|헨리넥 니트|long|ivory cable-knit cropped henley sweater over a white oxford shirt',
+    'top|케이블 크롭 헨리넥 니트|브라운|헨리넥 니트|long|dark brown cable-knit cropped henley sweater over a white oxford shirt',
     'bottom|Barrel-Fit Denim|중청|배럴 데님|wide|medium-wash curved tapered barrel-fit jeans',
     'shoes|1461 3홀 블랙 나파|블랙|더비 슈즈|low|black smooth leather three-eyelet derby shoes']],
   ['1471047889459716404', 1, '카 코트 & 칼라 가디건', '차콜 & 스카이블루', [
@@ -191,9 +191,9 @@ export default [
     'top|아가일 라운드 넥 가디건|토프|아가일 가디건|long|taupe argyle round-neck cardigan over a cream oxford shirt',
     'bottom|어센틱 치노 팬츠|베이지|치노 팬츠|pants|sand beige chino pants',
     'shoes|라운지 폴드 로퍼|블랙|로퍼|low|washed black leather loafers']],
-  ['1557326090718422884', 1, '레더 카 코트 & 니트', '블랙 & 그레이', [
+  ['1557326090718422884', 1, '레더 카 코트 & 니트', '블랙 & 아이보리', [
     'outer|카프 스킨 카코트|블랙|레더 카 코트|mid|black calfskin leather car coat',
-    'top|화란 세미오버 니트|그레이|니트|long|gray semi-oversized knit sweater',
+    'top|화란 세미오버 니트|아이보리|니트|long|off-white semi-oversized crewneck knit sweater',
     'bottom|UNIFORM COTTON CHINO PANTS|블랙|치노 팬츠|pants|black cotton chino pants',
     'shoes|라운지 폴드 로퍼|블랙|로퍼|low|washed black leather loafers',
     'acc|크링클 스카프 블랙|블랙|머플러||black crinkle scarf']],
@@ -225,9 +225,9 @@ export default [
     'bottom|Dis Jeans Aged Blue|중청|데님 팬츠|wide|aged medium-blue wide jeans',
     'shoes|왈라비 GTX - 메이플|카멜|왈라비|low|maple tan suede wallabee shoes',
     'acc|베이직 로고 캡 NAVY|네이비|볼캡||navy baseball cap']],
-  ['1551785084074702496', 2, '블루 그레이 라이트 다운', '블루 & 네이비', [
+  ['1551785084074702496', 2, '블루 그레이 라이트 다운', '블루 & 민트', [
     'outer|후디드 라이트 다운 재킷 [블루 그레이]|블루|라이트 다운|short|blue-gray hooded light down jacket',
-    'top|에센셜 브이넥 니트 9color|네이비|브이넥 니트|long|navy v-neck knit over a cropped white shirt',
+    'top|에센셜 브이넥 니트 9color|민트|브이넥 니트|long|mint v-neck knit over a pale blue shirt',
     'bottom|커브드 데님 팬츠 (8 colors)|중청|커브드 데님|wide|medium-wash curved jeans',
     'shoes|Mule Wallabee|베이지|왈라비 뮬|low|beige suede wallabee mules']],
   ['1471108875197721648', 2, 'CWU 봄버 & 모크넥', '블랙 & 브라운', [
@@ -277,7 +277,7 @@ export default [
     'acc|5-PANEL PETER CAP - GREEN|그린|캡||green five-panel cap']],
   ['1557649377205955852', 2, '레더 M-51 & 크루넥 니트', '블랙 & 인디고', [
     'outer|레더 M-51 필드 자켓 BLACK|블랙|레더 필드 재킷|mid|black washed vegetable leather M-51 field jacket',
-    'top|워셔블 에센셜 크루넥 니트|그레이|크루넥 니트|long|gray crewneck knit over a black henley tee',
+    'top||블랙|골지 니트|long|black ribbed knit over a gray henley tee',
     'bottom|Maverick Denim Pants Washed Indigo|진청|데님 팬츠|wide|washed indigo jeans',
     'shoes|너티 왈라비 모카신|브라운|왈라비 모카신|low|mocha brown suede wallabee moccasins']],
   ['1557326090328353199', 2, '카키 필드 재킷 & 버건디 니트', '카키 & 버건디', [
@@ -382,7 +382,7 @@ export default [
     'shoes|파스칼 벤 8홀|브라운|워커 부츠|boots|brown leather 8-eye boots']],
   ['1550111867222299331', 3, '프렌치 워크 재킷 & 올리브 팬츠', '블루 & 올리브', [
     'outer|워시드 프렌치 워크 자켓_Blue|블루|프렌치 워크 재킷|short|washed blue French work jacket',
-    'top|레이어드 헨리넥 크롭 니트 티|아이보리|헨리넥 니트 티|long|ivory layered henley cropped knit tee',
+    'top|레이어드 헨리넥 크롭 니트 티|차콜|헨리넥 니트 티|long|charcoal layered henley cropped knit tee',
     'bottom|엣지 워크 라보 팬츠 [카키 올리브]|올리브|워크 팬츠|wide|khaki olive wide work pants',
     'shoes|레거시 로퍼|블랙|로퍼|low|oil black leather loafers',
     'acc|Diamond Scarf Floral Paisley Khaki|카키|스카프||khaki paisley bandana scarf']],

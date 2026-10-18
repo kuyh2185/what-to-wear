@@ -13,9 +13,9 @@ export default [
     'top|라운드 크롭 니트|레드|크롭 니트|long|red cropped round-neck wool knit',
     'bottom|세미 와이드 치노|베이지|와이드 치노|wide|beige semi-wide chino pants',
     'shoes|RUCHED LOAFER|블랙|로퍼|low|black ruched leather loafers']],
-  [26, 0, '코듀로이 숏 패딩', '블랙 & 데님', [
+  [26, 0, '코듀로이 숏 패딩', '블랙 & 퍼플', [
     'outer|코듀로이 숏 패딩|블랙|코듀로이 숏 패딩|short|black corduroy short puffer jacket',
-    'top|브이넥 레이어드 크롭 니트|그레이|브이넥 니트|long|gray v-neck layered cropped knit',
+    'top|브이넥 레이어드 크롭 니트|퍼플|브이넥 니트|long|deep eggplant purple v-neck layered cropped knit',
     'bottom|세미 커브드 데님|중청|커브드 데님|wide|medium-wash semi-curved jeans',
     'shoes|로웰 4홀|블랙|더비 슈즈|low|black leather four-eyelet derby shoes']],
   [27, 0, '올블랙 숏 패딩', '블랙', [
@@ -25,19 +25,19 @@ export default [
     'shoes|메이페어|블랙|스웨이드 슈즈|low|black tufted suede shoes']],
   [28, 0, '다운 파카 & 셔츠', '차콜 & 그레이', [
     'outer|duck down parka|차콜|다운 파카|mid|charcoal reversible duck down parka',
-    'top|크리즈 스트라이프 셔츠|스카이블루|스트라이프 셔츠|long|light blue striped shirt',
+    'top|크리즈 스트라이프 셔츠|화이트|스트라이프 셔츠|long|white shirt with thin brown pinstripes',
     'bottom|슈퍼 와이드 히든|차콜|와이드 슬랙스|wide|charcoal gray super wide slacks',
     'shoes|몬트리올|네이비|스니커즈|low|dark indigo and white retro sneakers',
     'acc|Argyle wool knit scarf|그레이|아가일 머플러||gray argyle wool knit scarf']],
-  [29, 0, '미드웨이트 패딩 & 플리스', '블랙 & 그레이', [
-    'outer|미드웨이트 패딩|블랙|미드웨이트 패딩|short|black midweight padded jacket',
-    'top|클라우드 하프넥 스냅 플리스|그레이|하프넥 플리스|long|gray half-neck snap fleece pullover',
+  [29, 0, '미드웨이트 패딩 & 플리스', '라벤더 & 베이지', [
+    'outer|미드웨이트 패딩|라벤더|미드웨이트 패딩|short|periwinkle lavender-blue midweight padded jacket',
+    'top|클라우드 하프넥 스냅 플리스|베이지|하프넥 플리스|long|oatmeal beige half-neck snap fleece pullover',
     'bottom|DWARF DENIM|블랙|블랙 데님|wide|black wide denim pants',
     'shoes|ACG 루퍼스|베이지|ACG 슬립온|low|stone beige and black outdoor slip-on shoes',
     'acc|볼캡 NY|블랙|볼캡||black baseball cap']],
   [30, 0, 'N2B 숏 파카', '블랙', [
     'outer|N2B 밀리터리 숏 파카|블랙|N2B 숏 파카|short|black N2B military short parka with a fur-trimmed hood',
-    'top||그레이|후드티|long|gray hoodie',
+    'top||화이트|긴팔 티|long|plain white long-sleeve t-shirt underneath',
     'bottom|엣지 워크 라보 팬츠|블랙|워크 팬츠|wide|faded black wide work pants',
     'shoes|우든 홀스하이드 더비|블랙|더비 슈즈|low|black horsehide derby shoes']],
   [41, 0, 'N2B 파카 & 웨스턴 셔츠', '블랙 & 베이지', [
@@ -45,9 +45,9 @@ export default [
     'top|데님 웨스턴 셔츠|블랙|데님 웨스턴 셔츠|long|black denim western shirt',
     'bottom|엣지 워크 라보 팬츠|베이지|워크 팬츠|wide|faded beige wide work pants',
     'shoes|SHOWER|블랙|컴포트 슈즈|low|black leather comfort shoes']],
-  [49, 0, '패널 패딩 & 헨리넥', '블랙 & 그레이', [
+  [49, 0, '패널 패딩 & 헨리넥', '블랙 & 베이지', [
     'outer|Diagonal panel padding|블랙|패딩 재킷|short|black diagonal-panel padded jacket',
-    'top|데일리 헨리넥 니트|그레이|헨리넥 니트|long|gray henley-neck knit',
+    'top|데일리 헨리넥 니트|베이지|헨리넥 니트|long|oatmeal beige henley-neck knit',
     'bottom|더블턱 와이드 슬랙스|블랙|와이드 슬랙스|wide|black double-pleated wide slacks',
     'shoes|앨런 로퍼|블랙|로퍼|low|black leather loafers']],
   [54, 0, 'N2B 파카 & 와이드 데님', '블랙', [
@@ -103,7 +103,7 @@ export default [
     'shoes|데크 보드슈즈 카멜|카멜|보드 슈즈|low|camel deck board shoes']],
   [24, 1, '후드 재킷 & 플란넬', '블랙 & 체크', [
     'outer|[씬라이트] 후드 재킷|블랙|후드 재킷|short|black lightweight padded hooded jacket',
-    'top|플라넬 원포켓 체크 셔츠|레드|플란넬 체크 셔츠|long|red flannel check shirt over a crop long-sleeve tee',
+    'top|플라넬 원포켓 체크 셔츠|차콜|플란넬 체크 셔츠|long|charcoal gray plaid flannel shirt over a plain white crop long-sleeve tee',
     'bottom|커브드 원턱 스웨트|블랙|커브드 스웨트 팬츠|wide|black curved one-tuck sweat pants',
     'shoes|타스만 II|브라운|타스만 슬리퍼|low|chestnut suede shearling slippers',
     'acc|택티컬 비니|블랙|비니||black tactical beanie']],
@@ -121,7 +121,7 @@ export default [
     'acc|Brown Check Muffler|브라운|체크 머플러||brown check scarf']],
   [46, 1, '발마칸 로브 코트', '브라운 & 크림', [
     'outer|발마칸 로브코트|브라운|발마칸 코트|long|brown cashmere-blend balmacaan robe coat',
-    'top|에센셜 크루 넥 니트|블랙|크루넥 니트|long|black crew-neck knit',
+    'top|에센셜 크루 넥 니트|블루|크루넥 니트|long|cobalt blue crew-neck knit draped over the shoulders, plain white t-shirt underneath',
     'bottom|레귤러 핏 데님 팬츠 [크림]|크림|크림 데님|pants|cream regular-fit jeans',
     'shoes|스웨이드 5CM 모크슈즈|브라운|모크 슈즈|low|brown suede moc-toe shoes',
     'acc|찰리캡|블랙|캡||black cap']],
@@ -133,7 +133,7 @@ export default [
     'acc|5Panel Vintage Cap|블랙|캡||black vintage cap']],
   [52, 1, '시어 다운 & 카고', '그레이', [
     'outer|시어 레이어 후디드 다운|그레이|후디드 다운|short|gray sheer-layer hooded down jacket',
-    'top||그레이|후드티|long|gray hoodie',
+    'top||화이트|긴팔 티|long|plain white long-sleeve t-shirt underneath',
     'bottom|속기모 와이드 벨티드 카고|그레이|벨티드 카고 팬츠|wide|gray fleece-lined wide belted cargo pants',
     'shoes|독일군|블랙|독일군 스니커즈|low|black leather german army trainers',
     'acc|캐시미어 롤업 비니|그레이|비니||gray cashmere beanie']],
@@ -143,9 +143,9 @@ export default [
     'top|DISTRESSED V NECK KNIT|블랙|브이넥 니트|long|black distressed v-neck knit over a black check shirt',
     'bottom|Double Knee Pants|베이지|더블니 팬츠|wide|beige double-knee work pants',
     'shoes|H-Street 코듀로이|브라운|코듀로이 스니커즈|low|brown corduroy low-top sneakers']],
-  [5, 2, '울 블루종 & 후드', '브라운 & 차콜', [
+  [5, 2, '울 블루종 & 후드', '브라운 & 머스터드', [
     'outer|빅카라 울 2-WAY 블루종 - 다크브라운|브라운|울 블루종|short|dark brown wool blouson with a big collar',
-    'top|VINTAGE PIGMENT HOODIE|차콜|피그먼트 후드|long|charcoal vintage pigment-dyed hoodie',
+    'top|VINTAGE PIGMENT HOODIE|옐로우|피그먼트 후드|long|mustard yellow graphic hoodie',
     'bottom|햄 스트랩 커브드 팬츠|차콜|커브드 팬츠|wide|charcoal curved pants',
     'shoes|데저트 트렉|레드|스웨이드 슈즈|low|red suede desert trek shoes']],
   [6, 2, '봄버 & 버건디 가디건', '세이지 & 버건디', [
@@ -207,9 +207,9 @@ export default [
     'bottom|STRIPE MIXED CARGO DENIM|블랙|카고 데님|wide|black striped cargo denim pants',
     'shoes|헤비듀티 부츠|블랙|부츠|boots|black horse leather heavy-duty boots',
     'acc|네오 로고 비니|블랙|비니||black logo beanie']],
-  [59, 2, '라이트 패딩 & 후드', '그레이 & 차콜', [
+  [59, 2, '라이트 패딩 & 후드', '그레이 & 블랙', [
     'outer|라이트 후디 패딩 자켓|그레이|라이트 패딩|short|gray light hooded padded jacket',
-    'top|리버스위브 루즈핏 후드|네이비|후드티|long|navy loose-fit reverse weave hoodie',
+    'top|리버스위브 루즈핏 후드|블랙|후드티|long|black loose-fit reverse weave hoodie',
     'bottom|커브드 와이드 코튼 데님|차콜|커브드 데님|wide|charcoal gray curved wide jeans',
     'shoes|러기드 스웨이드 뮬|블랙|스웨이드 뮬|low|black rugged suede mules',
     'acc|FLAT CAP|네이비|플랫 캡||navy flat cap']],
@@ -264,9 +264,9 @@ export default [
     'top|미니멀 칼라드 니트|베이지|칼라 니트|long|oatmeal collared knit',
     'bottom|솔리드 CP 커브드 치노|베이지|커브드 치노|wide|beige curved chino pants',
     'shoes|Uto_Black|블랙|가죽 슈즈|low|black matte leather shoes']],
-  [44, 3, '트윌 재킷 & 옥스포드', '네이비 & 블루', [
+  [44, 3, '트윌 재킷 & 옥스포드', '네이비 & 그린', [
     'outer|트윌 재킷-네이비|네이비|트윌 재킷|short|navy twill jacket',
-    'top|코지 플리스 쿼터 집업 니트|그레이|쿼터 집업 니트|long|gray fleece quarter-zip knit over a blue oxford shirt',
+    'top|코지 플리스 쿼터 집업 니트|그린|쿼터 집업 니트|long|dark green fleece quarter-zip knit over a blue oxford shirt',
     'bottom|슬릭 커브드 코튼 치노|베이지|커브드 치노|wide|beige curved cotton chino pants',
     'shoes|BOLD TOE DERBY|블랙|더비 슈즈|low|black bold-toe derby shoes']],
   [47, 3, '트위드 워크 재킷', '다크그레이 & 블랙', [
@@ -360,9 +360,9 @@ export default [
     'bottom|커브드 데님 팬츠 (8 colors)|중청|커브드 데님|wide|blue curved jeans',
     'shoes|러그 더비|블랙|러그 더비|low|black horse leather lug derby shoes']],
   // ---------- 20~22° ----------
-  [87, 5, '블레이저 & 린넨 헨리넥', '블랙 & 크림', [
+  [87, 5, '블레이저 & 린넨 헨리넥', '블랙 톤온톤', [
     'outer|릴렉스드 베이식 블레이저 [블랙]|블랙|블레이저|mid|black relaxed blazer',
-    'top|린넨 헨리넥 크롭 니트|크림|린넨 헨리넥 니트|short|cream linen henley-neck cropped knit',
+    'top|린넨 헨리넥 크롭 니트|블랙|린넨 헨리넥 니트|short|black short-sleeve henley-neck knit',
     'bottom|와이드 히든 밴딩 슬랙스 [블랙]|블랙|와이드 슬랙스|wide|black wide slacks',
     'shoes|우든 홀스하이드 더비|블랙|더비 슈즈|low|black horsehide derby shoes']],
   [99, 5, '스트라이프 옥스포드 & 와이드 데님', '블루 & 화이트', [

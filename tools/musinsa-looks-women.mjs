@@ -29,9 +29,9 @@ export default [
     'bottom|언밸런스 카고 레귤러 코튼|네이비|카고 팬츠|wide|navy studded vintage cargo pants',
     'shoes|카엘 타이 랩 부츠|베이지|랩 부츠|boots|beige tie-wrap boots',
     'acc|Rose Lace Muffler|베이지|레이스 머플러||beige rose lace scarf']],
-  [153, 0, '미드웨이트 패딩 & 체크 셔츠', '블랙 & 체크', [
-    'outer|Comfortemp® 미드웨이트 패딩|블랙|미드웨이트 패딩|short|black midweight padded jacket',
-    'top|FLEECE HALF ZIP UP|그레이|플리스 하프 집업|long|gray fleece half zip over a check shirt',
+  [153, 0, '미드웨이트 패딩 & 체크 셔츠', '카키 & 체크', [
+    'outer|Comfortemp® 미드웨이트 패딩|카키|미드웨이트 패딩|short|glossy olive khaki midweight padded jacket',
+    'top|FLEECE HALF ZIP UP|그린|플리스 하프 집업|long|teal green fleece half zip with blue trim over a navy and gray check shirt',
     'bottom|OG ESSENTIAL WIDE PANTS|블랙|와이드 팬츠|wide|black wide pants',
     'shoes|젤 카야노 12.1|블랙|러닝화|low|all-black running sneakers with beige leg warmers',
     'acc|vintage stripe beanie brown|브라운|비니||brown striped beanie']],
@@ -70,7 +70,7 @@ export default [
     'acc|시어 자가드 스카프 버건디|버건디|스카프||burgundy sheer jacquard scarf']],
   [143, 1, '하이넥 레더 & 슬라우치 부츠', '블랙 & 버건디', [
     'outer|high neck leather jacket|블랙|하이넥 레더 재킷|short|black high-neck leather jacket',
-    'top|베이직 브이넥 가디건|그레이|브이넥 가디건|long|gray v-neck cardigan',
+    'top|베이직 브이넥 가디건|레드|브이넥 가디건|long|red v-neck cardigan tied around the waist, plain white t-shirt underneath',
     'bottom|코튼 커브드 팬츠|베이지|커브드 팬츠|wide|beige cotton curved pants',
     'shoes|buckle slouchy boots|블랙|슬라우치 부츠|boots|black buckle slouchy boots',
     'acc|CITY BAG (BURGENDY)|버건디|시티백||burgundy shoulder bag']],
@@ -128,7 +128,7 @@ export default [
     'shoes|클래식 메리제인|블랙|메리제인|low|black mary jane shoes with gray tights']],
   [202, 1, '하프 코트 & 와이드 진', '블랙 & 애쉬블루', [
     'outer|Raw Edge Half Coat|블랙|하프 코트|mid|black raw-edge half coat',
-    'top||블랙|터틀넥 니트|long|black turtleneck knit',
+    'top||화이트|긴팔 티|long|plain white long-sleeve t-shirt underneath',
     'bottom|DEVON WIDE JEAN|연청|와이드 진|wide|ash blue wide jeans',
     'shoes|웨지 쉐이드 펌프스|블랙|웨지 펌프스|low|black wedge suede pumps']],
   [201, 1, '라이트 다운 & 플러프 후드', '크림 & 네이비', [
@@ -227,9 +227,9 @@ export default [
     'bottom|멀티 카고포켓 와이드 면팬츠|베이지|카고 와이드 팬츠|wide|beige multi-pocket wide cotton cargo pants',
     'shoes|스티치 레이스업 로퍼|브라운|레이스업 로퍼|low|brown stitched lace-up loafers',
     'acc|DANCER 5P CAP|블랙|캡||black cap']],
-  [184, 3, '경량패딩 & 부츠컷 데님', '블랙 & 데님', [
-    'outer|캐주얼 경량패딩|블랙|경량 패딩|short|black lightweight padded jacket',
-    'top|Halter neck layered top|그레이|홀터 레이어드 톱|long|gray halter-neck top layered over a rib tee',
+  [184, 3, '경량패딩 & 부츠컷 데님', '그레이지 & 데님', [
+    'outer|캐주얼 경량패딩|베이지|경량 패딩|short|light greige quilted hooded lightweight padded jacket',
+    'top|Halter neck layered top|베이지|홀터 레이어드 톱|long|light beige halter-neck top with ribbon straps layered over a charcoal gray long-sleeve tee',
     'bottom|로우라이즈 워싱 부츠컷 데님|중청|부츠컷 데님|pants|washed blue low-rise bootcut jeans',
     'shoes|ROBE Square Pumps|블랙|스퀘어 펌프스|low|black square-toe pumps',
     'acc|하우스 로고 코튼 볼캡|블랙|볼캡||black ball cap']],
@@ -266,7 +266,7 @@ export default [
     'shoes|스파이럴 플랫폼 메리 제인|블랙|플랫폼 메리제인|low|black platform mary jane shoes']],
   [157, 3, '워크 재킷 레이어드', '블랙 & 그레이', [
     'outer|메탈 카라포인트 워크자켓|블랙|워크 재킷|short|black work jacket with a metal collar tip',
-    'top||그레이|후드티|long|gray hoodie',
+    'top||화이트|반팔 티|short|plain white crew-neck t-shirt underneath',
     'bottom|C로고 스트레이트 스웨트 팬츠|그레이|스트레이트 스웨트 팬츠|pants|gray straight sweat pants',
     'shoes|젤-님버스 10.1|화이트|러닝화|low|white and glacier gray running sneakers',
     'acc|리버시블 비니_퍼플|퍼플|비니||purple beanie']],
@@ -406,9 +406,9 @@ export default [
     'dress|Velin Halter Denim Dress|중청|데님 홀터 드레스|none-long|middle blue halter denim midi dress over a white tee',
     'shoes|도쿄 메리제인 - 크림화이트:레드|크림|메리제인 스니커즈|low|cream white and red mary jane sneakers',
     'acc|Signature Ball Cap - Ivory|아이보리|볼캡||ivory ball cap']],
-  [251, 5, '리브 가디건 & 스웨트 팬츠', '그레이 & 화이트', [
+  [251, 5, '리브 가디건 & 스웨트 팬츠', '그레이 & 블랙', [
     'outer|Snap Ribbed Cardigan_Melange Grey|그레이|리브 가디건|short|melange gray snap ribbed cardigan',
-    'top||화이트|탱크톱|none|white tank top',
+    'top||블랙|탱크톱|none|black tank top',
     'bottom|OVERFIT SWEAT PANTS_MELANGE WHITE|화이트|스웨트 팬츠|wide|melange white overfit sweat pants',
     'shoes|slouchy open toe boots|아이보리|오픈토 부츠|boots|ivory slouchy open-toe boots']],
   [254, 5, '로고 롱슬리브 & 버뮤다', '블루 & 베이지', [
@@ -491,7 +491,7 @@ export default [
     'shoes|TULE MARYJANES|블랙|메리제인|low|black mary jane shoes',
     'acc|LOOSE WEAVE KNIT MUFFLER_BLUE|블루|니트 머플러||blue loose-weave knit scarf']],
   [272, 6, '뷔스티에 티 & 도트 카프리', '핑크 & 블랙', [
-    'top|BUSTIER T-SHIRT SET PINK|핑크|뷔스티에 티 세트|short|pink bustier layered over a t-shirt',
+    'top|BUSTIER T-SHIRT SET PINK|핑크|뷔스티에 티 세트|short|pink bustier layered over a matching light pink tee',
     'bottom|DOT WRAP CAPRI PANTS BLACK|블랙|도트 카프리|pants|black dot wrap capri pants',
     'shoes|8065 메리제인 스무스 블랙|블랙|메리제인|low|black smooth leather mary jane shoes',
     'acc|DOT SATIN MINI TOTE BAG PINK|핑크|미니 토트||pink satin mini tote']],
@@ -548,9 +548,9 @@ export default [
     'top|리본 홀터넥 탑 (화이트)|화이트|홀터넥 톱|none|white ribbon halter-neck top',
     'bottom|레이스 새틴 쇼츠 네이비|네이비|새틴 쇼츠|shorts|navy lace-trimmed satin shorts',
     'shoes|삼바 제인 - 블랙:화이트|블랙|삼바 제인|low|black and white mary jane terrace sneakers with white leg warmers']],
-  [250, 7, '버튼 가디건 셋업 & 레이어드 쇼츠', '아이보리 & 블랙', [
+  [250, 7, '버튼 가디건 셋업 & 레이어드 쇼츠', '아이보리 & 네이비', [
     'outer|에어리 버튼 가디건 셋업|아이보리|버튼 가디건|short|ivory airy button cardigan',
-    'top||아이보리|캐미솔|none|ivory camisole',
+    'top||네이비|긴팔 티|long|navy long-sleeve tee with ivory trim',
     'bottom|Layered Shorts / Black|블랙|레이어드 쇼츠|shorts|black layered shorts',
     'shoes|도트 메리제인|블랙|플랫폼 메리제인|low|black dot platform ballerina mary janes with ribbed high socks']],
 ];
