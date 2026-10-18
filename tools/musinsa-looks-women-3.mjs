@@ -433,7 +433,7 @@ export default [
     'bottom|Hidden Camo Balloon Pants Beige|베이지|벌룬 팬츠|wide|washed khaki beige oversized balloon cotton pants with patch pockets',
     'shoes|아디폼 메가제인|차콜|메리제인 스니커즈|low|charcoal chunky mesh mary-jane sneakers']],
   ['1529734914284296792', 6, '그래픽 티 & 스타 트랙팬츠', '화이트 & 네이비', [
-    'top|모션 매트&패트 티셔츠|화이트|그래픽 반팔 티|short|white loose short-sleeve tee with a cartoon character print, sleeves rolled',
+    'top|모션 매트&패트 티셔츠|화이트|그래픽 반팔 티|short|white loose short-sleeve tee with a small abstract doodle print, sleeves rolled',
     'bottom|스타 데코 코튼 트랙팬츠|네이비|스타 트랙팬츠|wide|navy cotton track pants with an all-over small white star print and white side stripes, with a red leather belt',
     'shoes|스피드캣 발렛 젤리|그레이|젤리 발레 스니커즈|low|pale gray translucent jelly ballet sneakers',
     'acc|WEB LOGO FLOWER MESH CAP|화이트|메시 캡||white and light gray mesh trucker cap with a floral print front']],

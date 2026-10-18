@@ -84,7 +84,7 @@ export default [
     'shoes|UNIFORM Wide Loafer|카멜|로퍼|low|tan suede penny loafers',
     'acc|리브드 니트 핸드 워머|그레이|핸드 워머||medium gray ribbed knit fingerless arm warmers']],
   ['1465557550589846498', 0, '퀼팅 패딩 & 스타 가디건', '그레이 & 옐로우', [
-    'outer|고스트 실루엣 패디드 점퍼 [차콜]|그레이|퀼팅 패딩|short|light warm-gray diamond-quilted hooded padded jumper',
+    'outer|고스트 실루엣 패디드 점퍼 [차콜]|그레이|퀼팅 패딩|short|light warm-gray diamond-quilted hooded padded jacket with full-length sleeves',
     'top|STARLIGHT CARDIGAN|차콜|모헤어 가디건|long|charcoal fuzzy mohair-blend cardigan with white star intarsia sleeves over a navy crew-neck tee',
     'bottom|STRIPE DOUBLE KNEE DENIM|연청|히코리 데님|wide|light blue hickory-stripe double-knee wide jeans',
     'shoes|VTZ Aco|옐로우|스니커즈|low|mustard yellow suede low-profile sneakers',

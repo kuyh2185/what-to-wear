@@ -44,7 +44,7 @@ export default [
     src: { name: HB, url: at(HB_TOKYO_FW26, 20) }, seen: '도쿄 FW26, 짙은 갈색 롱코트, 회색 사진 프린트 티, 연청 와이드 데님(체인 벨트), 그레이 캡, 짙은 가죽 슈즈',
     pieces: [
       'outer|브라운|롱코트|long|dark brown wool long coat worn open',
-      'top|그레이|프린트 티|long|gray t-shirt with a faded photo print',
+      'top|그레이|프린트 티|long|gray t-shirt with a faded abstract graphic print',
       'bottom|연청|와이드 데님|wide|light wash wide-leg jeans with a dark chain belt',
       'shoes|블랙|가죽 슈즈|low|dark leather lace-up shoes',
       'acc|그레이|볼캡||washed gray baseball cap',
@@ -162,7 +162,7 @@ export default [
   { g: 'men', band: 6, style: '그래픽 티 & 크림 와이드', pal: '차콜 & 크림 + 퍼플',
     src: { name: HB, url: at(HB_TOKYO_SS27, 14) }, seen: '도쿄 SS27, 차콜 사진 프린트 반팔 티, 크림 와이드 팬츠, 검은 벨트, 검은 로퍼, 보라 숄더백',
     pieces: [
-      'top|차콜|그래픽 티|short|charcoal short-sleeve t-shirt with a faded photo print, tucked in',
+      'top|차콜|그래픽 티|short|charcoal short-sleeve t-shirt with a faded abstract graphic print, tucked in',
       'bottom|크림|와이드 팬츠|wide|cream wide-leg trousers with a black belt',
       'shoes|블랙|로퍼|low|black leather loafers',
       'acc|퍼플|숄더백||purple nylon shoulder bag',

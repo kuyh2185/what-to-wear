@@ -36,7 +36,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/looks') return looks(url, env, cors);
     const img = url.pathname.match(/^\/img\/([a-z0-9]{6,20})\/([a-z]{2,8})$/);
-    if (img) return serveImage(env, ctx, img[1], img[2]);
+    if (img) return serveImage(env, ctx, img[1], img[2], url.searchParams.get('v') || '');
     if (url.pathname.startsWith('/admin/')) return admin(request, url, env, cors);
     if (url.pathname !== '/search') return json({ error: 'not_found' }, 404, cors);
     if (!env.KAKAO_REST_API_KEY) return json({ error: 'missing_api_key' }, 503, cors);

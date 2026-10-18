@@ -529,7 +529,7 @@ function pickLooks(pool,n,exclude){
   return shuffle(cand).slice(0,n);
 }
 // Look photos are served as immutable; a version from the look's description makes a redrawn look a new URL.
-const lookVer=c=>{let h=0;for(const ch of c.pieces.map(p=>p.en||p.name).join('|'))h=Math.imul(h,31)+ch.charCodeAt(0)|0;return (h>>>0).toString(36);};
+const lookVer=c=>{let h=0;for(const ch of c.pieces.map(p=>p.en||p.name).join('|'))h=Math.imul(h,31)+ch.charCodeAt(0)|0;return (h>>>0).toString(36)+(c.ih||'');};
 // Most looks only have the average-body photo for now; use it for every body type.
 const imgBody=(c,bodyId)=>!c.id||!c.bodies?null:c.bodies.includes(bodyId)?bodyId:c.bodies.includes('avg')?'avg':null;
 function heroHTML(c,body,attrs,eager){

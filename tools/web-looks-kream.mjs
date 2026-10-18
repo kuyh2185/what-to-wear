@@ -349,7 +349,7 @@ export default [
   { g: 'women', band: 7, style: '그래픽 티 & 카고 버뮤다', pal: '화이트 & 베이지 & 라임',
     src: { name: 'KREAM', url: 'https://kream.co.kr/social/posts/1943211' }, seen: '8월 초, 캐릭터 프린트 흰 반팔 티, 회색 웨빙 벨트, 베이지 와이드 카고 버뮤다, 흰 양말, 연두색 스웨이드 스니커즈, 검정 슬링 스트랩',
     pieces: [
-      'top|화이트|그래픽 반팔 티|short|white crew-neck t-shirt with a cartoon character print, tucked',
+      'top|화이트|그래픽 반팔 티|short|white crew-neck t-shirt with a small abstract doodle print, tucked',
       'bottom|베이지|카고 버뮤다|shorts|beige cotton wide cargo bermuda shorts below the knee',
       'shoes|옐로우|스웨이드 스니커즈|low|lime yellow-green suede retro sneakers with white crew socks',
       'acc|그레이|웨빙 벨트||gray nylon webbing belt',

@@ -235,7 +235,7 @@ export default [
     'bottom|Washed Low Rise Denim Shorts|블랙|데님 쇼츠|shorts|black washed low-rise denim shorts',
     'shoes|러스크 스트랩 슬라우치드 부츠|블랙|슬라우치 부츠|boots|black strap slouched boots with gray knit lace leg warmers']],
   ['1557579246966677943', 2, '스웨이드 점퍼 & 마이크로 미니', '브라운 & 화이트', [
-    'outer|URBAN SUEDE JUMPER|브라운|스웨이드 점퍼|short|brown suede jumper',
+    'outer|URBAN SUEDE JUMPER|브라운|스웨이드 점퍼|short|brown suede zip-up blouson jacket with full-length sleeves',
     'top|슬릿 크루 롱슬리브|화이트|롱슬리브 티|long|white slit crew-neck long-sleeve tee',
     'bottom|RODEO MICRO MINI SKIRT|화이트|마이크로 미니스커트|skirt|white micro mini skirt',
     'shoes|링클 투웨이 스틸레토 부츠|블랙|스틸레토 부츠|boots|black wrinkled stiletto boots',

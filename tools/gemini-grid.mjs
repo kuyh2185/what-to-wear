@@ -29,7 +29,9 @@ console.log(JSON.stringify(jobs.slice(0, Number(maxArg) || jobs.length)));
 export const gridText = (g, panels) => {
   const who = `a matte black faceless ${g === 'm' ? 'male' : 'female'} mannequin with an average, medium build`;
   const look = 'The clothes fit naturally like on a real person, with realistic fabric drape and texture. ' +
-    'The mannequin has a smooth featureless black head with no face and no hair, and black hands.';
+    'The mannequin has a smooth featureless black head with no face and no hair, and black hands.' +
+    // Gemini printed prompt words ("MINT PRINT"), real faces and cartoon characters on graphic tees (2026-10-18 audit)
+    ' Any print or graphic on the clothes is a simple abstract shape or blurred marks: no readable words from these instructions, no human faces or photos of people, no cartoon characters, no brand logos.';
   if (panels.length === 1) {
     return `Generate one new image, portrait 3:4. Full-body fashion catalog photo of ${who}, styled as a Korean street-style outfit. ` +
       `The mannequin is wearing: ${panels[0]} ${look} Standing straight, front view, the entire figure visible from head to shoes, ` +

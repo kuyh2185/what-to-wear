@@ -46,6 +46,8 @@ for (const l of ready) {
   (idx[key] ||= []).push({
     id: l.id, band: l.band, seed: 0, style: l.style, pal: l.pal, sig: l.sig, bodies: l.bodies, note: l.note, src: l.src,
     created: l.created || Math.round(statSync(join(dir, 'raw', `${l.id}_${l.bodies[0]}.png`)).mtimeMs), pieces: l.pieces,
+    // image hash: the page puts it in the image URL, so a redrawn picture is never served from an old cache
+    ih: (pngHash.get(`img:${l.id}:${l.bodies[0]}`) || '').slice(0, 10),
   });
 }
 for (const g of ['men', 'women']) for (let b = 0; b < BANDS.length; b++) idx[`idx:${g}:${b}`] ||= [];

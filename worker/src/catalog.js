@@ -144,9 +144,11 @@ async function refund(env, bKey, spent, lastError) {
   await env.LOOKS.put(bKey, String(value), { expirationTtl: 3 * 86400 });
 }
 
-export async function serveImage(env, ctx, id, body) {
+// v is the page's hash of the look's description: a redrawn image gets a new v, so the edge cache
+// (kept for a year) never serves the old picture under the new description
+export async function serveImage(env, ctx, id, body, v) {
   const cache = caches.default;
-  const key = new Request(`https://cache.what-to-wear/v1/img/${id}/${body}`);
+  const key = new Request(`https://cache.what-to-wear/v2/img/${id}/${body}?v=${encodeURIComponent(v)}`);
   const hit = await cache.match(key);
   if (hit) return hit;
   const buf = await env.LOOKS.get(`img:${id}:${body}`, 'arrayBuffer');
